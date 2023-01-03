@@ -9,7 +9,7 @@ export const App = () => {
     <StrictMode>
       <BrowserRouter>
         <Routes>
-          <Route index element={<Todos />} />
+          <Route index element={<Users />} />
           <Route path={`:uid/todos`} element={<Todos />} />
           <Route path="auth" element={<Auth />} />
         </Routes>
