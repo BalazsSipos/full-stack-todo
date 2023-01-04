@@ -1,3 +1,5 @@
+import { UserList } from "../components/UserList"
+
 export const Users = () => {
-    return <h2>User page works</h2>;
+    return <UserList />;
 };
