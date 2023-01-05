@@ -1,5 +1,5 @@
-import { UserList } from "../components/UserList"
+import { UserList } from '../components/UserList'
 
 export const Users = () => {
-    return <UserList />;
-};
+  return <UserList />
+}

@@ -1,20 +1,20 @@
-import { CardContent, Grid, Typography } from "@mui/material";
-import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
-import { useTodoList } from "../../common/hooks/queries/use-todo";
-import { TodoItem } from "./TodoItem";
+import { CardContent, Grid, Typography } from '@mui/material'
+import { TodoItem } from './TodoItem'
+import { useTodoList } from '../../common/hooks/queries/use-todo'
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied'
 
 const EmptyListCard = () => (
-  <CardContent sx={{ textAlign: "center" }}>
+  <CardContent sx={{ textAlign: 'center' }}>
     <SentimentDissatisfiedIcon />
     <Typography>It&apos;s so empty here</Typography>
   </CardContent>
-);
+)
 
 export const TodoList = () => {
-  const todoList = useTodoList();
+  const todoList = useTodoList()
 
   return (
-<Grid
+    <Grid
       container
       spacing={{ xs: 2, md: 4, lg: 8 }}
       sx={{ p: { xs: 2, md: 4 } }}
@@ -40,4 +40,4 @@ export const TodoList = () => {
     //   </Grid>
     // </>
   )
-};
+}

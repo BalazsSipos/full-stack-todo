@@ -1,5 +1,5 @@
-import { TodoList } from "../components/TodoList";
+import { TodoList } from '../components/TodoList'
 
 export const Todos = () => {
-    return <TodoList />;
-};
+  return <TodoList />
+}
