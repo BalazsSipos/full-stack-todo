@@ -16,12 +16,6 @@ module.exports = {
     'risxss/catch-potential-xss-react': 'error',
     'react/display-name': 'off',
   },
-  settings: {
-    react: {
-      pragma: 'React',
-      version: 'detect',
-    },
-  },
   env: {
     node: true,
   },
