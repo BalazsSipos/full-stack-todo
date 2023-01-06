@@ -1,15 +1,15 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { StrictMode } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Auth } from "./auth/pages/Auth";
-import { AppFrame } from "./common/components/AppFrame";
-import { useTheme } from "./common/theme/use-theme";
-import { PageNotFound } from "./PageNotFound";
-import { Todos } from "./todo/pages/Todos";
-import { Users } from "./user/pages/Users";
+import { AppFrame } from './common/components/AppFrame'
+import { Auth } from './auth/pages/Auth'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { PageNotFound } from './PageNotFound'
+import { StrictMode } from 'react'
+import { Todos } from './todo/pages/Todos'
+import { Users } from './user/pages/Users'
+import { useTheme } from './common/theme/use-theme'
 
 export const App = () => {
-  const theme = useTheme();
+  const theme = useTheme()
   return (
     <StrictMode>
       <BrowserRouter>
@@ -26,5 +26,5 @@ export const App = () => {
         </ThemeProvider>
       </BrowserRouter>
     </StrictMode>
-  );
-};
+  )
+}
