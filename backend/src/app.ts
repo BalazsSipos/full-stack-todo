@@ -1,6 +1,6 @@
-import 'reflect-metadata';
 import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from '@config';
-import { useExpressServer } from 'routing-controllers';
+import { myContainer } from '@/config/inversify.config';
+import { useContainer, useExpressServer } from 'routing-controllers';
 import errorMiddleware from '@middlewares/error.middleware';
 import express from 'express';
 
@@ -12,6 +12,7 @@ class App {
   // eslint-disable-next-line @typescript-eslint/ban-types
   constructor(Controllers: Function[]) {
     this.app = express();
+    useContainer(myContainer)
     this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
 
@@ -30,7 +31,7 @@ class App {
   }
 
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
+//   eslint-disable-next-line @typescript-eslint/ban-types
   private initializeRoutes(controllers: Function[]) {
     useExpressServer(this.app, {
       cors: {

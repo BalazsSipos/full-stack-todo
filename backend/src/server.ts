@@ -1,5 +1,6 @@
-import { UsersController } from '@controllers/users.controller';
+import 'reflect-metadata';
+import { Controllers } from './config/inversify.config';
 import App from '@/app';
 
-const app = new App([UsersController]);
+const app = new App(Controllers);
 app.listen();
