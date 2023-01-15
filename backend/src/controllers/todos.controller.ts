@@ -1,4 +1,4 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Post, Put, UseAfter } from 'routing-controllers';
+import { Body, Delete, Get, HttpCode, JsonController, Param, Patch, Post, UseAfter } from 'routing-controllers';
 import { CreateTodoDto, UpdateTodoDto } from '@/dtos/todos.dto';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { TYPES } from '@/config/types';
@@ -16,7 +16,7 @@ export class TodosController {
   @OpenAPI({ summary: 'Return a list of todos of a user' })
   async getTodos(@Param('uid') userId: string) {
     const findAllTodosData: Todo[] = await this.todoService.findAllTodosByUser(userId);
-    return { data: findAllTodosData, message: 'findAll' };
+    return findAllTodosData;
   }
 
   @Get('/users/:uid/todos/:tid')
@@ -36,7 +36,7 @@ export class TodosController {
     return { data: createdTodo, message: 'created' };
   }
 
-  @Put('/users/:uid/todos/:tid')
+  @Patch('/users/:uid/todos/:tid')
   // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
   @OpenAPI({ summary: 'Update a todo' })
   async updateUser(@Param('uid') userId: string,  @Param('tid') todoId: string, @Body() todoData: UpdateTodoDto) {

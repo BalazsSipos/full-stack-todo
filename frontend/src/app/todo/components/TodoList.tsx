@@ -1,43 +1,45 @@
-import { CardContent, Grid, Typography } from '@mui/material'
+import { Card, CardContent, Grid, Typography } from '@mui/material'
+import { GlassSurface } from '../../common/components/GlassSurface'
+import { Todo } from '../models/Todo'
 import { TodoItem } from './TodoItem'
-import { useTodoList } from '../../common/hooks/queries/use-todo'
+import { useParams } from 'react-router-dom'
+import { useTodos } from '../../common/hooks/queries/use-todo'
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied'
 
 const EmptyListCard = () => (
-  <CardContent sx={{ textAlign: 'center' }}>
-    <SentimentDissatisfiedIcon />
-    <Typography>It&apos;s so empty here</Typography>
-  </CardContent>
+  <GlassSurface component={Card} opacity={0.1}>
+    <CardContent sx={{ textAlign: 'center' }}>
+      <SentimentDissatisfiedIcon />
+      <Typography>It&apos;s so empty here</Typography>
+    </CardContent>
+  </GlassSurface>
 )
 
 export const TodoList = () => {
-  const todoList = useTodoList()
+  const { userId } = useParams();
+  console.log(userId)
+  const todosQuery = useTodos(String(userId))
+
+  const todoList = todosQuery.data ?? []
 
   return (
-    <Grid
-      container
-      spacing={{ xs: 2, md: 4, lg: 8 }}
-      sx={{ p: { xs: 2, md: 4 } }}
-      columns={{ xs: 1, md: 6, lg: 9, xl: 12 }}
-    >
-      {todoList.map((todoItem) => (
-        <Grid item xs={3} key={todoItem.id} justifyContent="center">
-          <TodoItem todo={todoItem} />
+    <>
+      {todoList.length ? (
+        <Grid
+          container
+          spacing={{ xs: 2, md: 4, lg: 8 }}
+          // sx={{ p: { xs: 2, md: 4 } }}
+          columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}
+        >
+          {todoList.map((todo: Todo) => (
+            <Grid item xs={1} md={3} key={todo.id} justifyContent="center">
+              <TodoItem todo={todo} />
+            </Grid>
+          ))}
         </Grid>
-      ))}
-      {todoList.length ? null : <EmptyListCard />}
-    </Grid>
-
-    // <>
-    //   <Grid item xs={1}>
-    //     <Stack spacing={2}>
-    //       <Typography variant="h6">Todos</Typography>
-    //       {todoList.map((todoItem) => (
-    //         <TodoItem todo={todoItem} key={todoItem.id} />
-    //       ))}
-    //       {todoList.length ? null : <EmptyListCard />}
-    //     </Stack>
-    //   </Grid>
-    // </>
+      ) : (
+        <EmptyListCard />
+      )}
+    </>
   )
 }

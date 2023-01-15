@@ -1,78 +1,123 @@
 import { Todo } from '../../../todo/models/Todo'
-import { User } from '../../../user/models/User'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 
-export const useTodoList = (): Todo[] => {
-  const user1: User = {
-    id: '1',
-    name: 'user1',
-    email: 'email1@email.com',
-    image: 'image1',
-    numberOfTodos: 1,
-  }
+export const useTodos = (userId: string) => {
 
-  const user2: User = {
-    id: '2',
-    name: 'user2',
-    email: 'email2@email.com',
-    image: 'image2',
-    numberOfTodos: 3,
-  }
+  return useQuery<Todo[], unknown>(
+    ['todos', 'list', userId],
+    async () => {
+      try {
+        const url = new URL(`/users/${userId}/todos`, process.env.API_URL)
+        const fetchResponse = await fetch(url.toString(), {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
+        })
 
-  const todo1: Todo = {
-    id: '1',
-    title: 'own active',
-    description: 'description1',
-    category: 'sport',
-    completed: false,
-    location: 'location1',
-    progress: 0,
-    startingDate: '2023-01-01',
-    createdAt: '2022-12-31',
-    createdBy: user1,
-    performedBy: user1,
-  }
+        if (fetchResponse.ok) {
+          return ((await fetchResponse.json()) as Todo[]) ?? []
+        } else {
+          throw new Error(fetchResponse.statusText)
+        }
+      } catch (e) {
+        throw new Error(`Failed get todos of user ${userId}`, { cause: e as Error })
+      }
+    },
+    {
+      enabled: true,
+      staleTime: 60 * 60 * 1000,
+      keepPreviousData: true,
+    }
+  )
+}
 
-  const todo2: Todo = {
-    id: '2',
-    title: 'foreign_active',
-    description: 'description2',
-    category: 'work',
-    completed: false,
-    location: 'location2',
-    progress: 10,
-    startingDate: '2023-01-02',
-    createdAt: '2022-12-31',
-    createdBy: user1,
-    performedBy: user2,
-  }
 
-  const todo3: Todo = {
-    id: '3',
-    title: 'own_future',
-    description: 'description3',
-    category: 'other',
-    completed: false,
-    location: 'location3',
-    progress: 0,
-    startingDate: '2023-02-02',
-    createdAt: '2023-01-02',
-    createdBy: user1,
-    performedBy: user1,
-  }
+export const useTodoCreation = (userId: string) => {
+  const queryClient = useQueryClient()
 
-  const todo4: Todo = {
-    id: '4',
-    title: 'foreign_assigned_to_me_active',
-    description: 'description4',
-    category: 'sport',
-    completed: false,
-    location: 'location4',
-    progress: 0,
-    startingDate: '2023-01-02',
-    createdAt: '2022-12-31',
-    createdBy: user2,
-    performedBy: user1,
-  }
+  return useMutation(
+    async (todo: Partial<Todo>) => {
+      try {
+        const url = new URL(`/users/${userId}/todos`, process.env.API_URL)
 
-  return [todo1, todo2, todo3, todo4]
+        const response = await fetch(url.toString(), {
+          method: 'POST',
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(todo),
+        })
+
+        if (!response.ok) {
+          throw new Error(response.statusText)
+        }
+      } catch (e) {
+        throw new Error('Failed to create todo', { cause: e as Error })
+      }
+    },
+    {
+      onSuccess: () => queryClient.invalidateQueries(['todos']),
+    }
+  )
+}
+
+export const useTodoPatch = (userId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (todo: Partial<Todo>) => {
+      try {
+        const url = new URL(`/users/${userId}/todos/${todo.id}`, process.env.API_URL)
+        const response = await fetch(url.toString(), {
+          method: 'PATCH',
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(todo),
+        })
+
+        if (!response.ok) {
+          throw new Error(response.statusText)
+        }
+      } catch (e) {
+        throw new Error('Failed to update todo', { cause: e as Error })
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['todos'])
+      }
+    }
+  )
+}
+
+export const useTodoDelete = (userId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (todo: Partial<Todo>) => {
+      try {
+        const url = new URL(`/users/${userId}/todos/${todo.id}`, process.env.API_URL)
+
+        const response = await fetch(url.toString(), {
+          method: 'DELETE',
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error(response.statusText)
+        }
+      } catch (e) {
+        throw new Error('Failed to delete todo', { cause: e as Error })
+      }
+    },
+    {
+      onSuccess: () => queryClient.invalidateQueries(['todos']),
+    }
+  )
 }

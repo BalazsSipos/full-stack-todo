@@ -1,4 +1,5 @@
-import { User } from '../../user/models/User'
+export const todoStatuses = ['Open', 'Done', 'Obsolete'] as const
+export type TodoStatus = typeof todoStatuses[number]
 
 export interface Todo {
   id: string
@@ -10,6 +11,6 @@ export interface Todo {
   progress: number
   startingDate: string
   createdAt: string
-  createdBy: User
-  performedBy: User
+  createdBy: string
+  performedBy: string
 }

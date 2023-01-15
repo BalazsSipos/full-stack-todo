@@ -1,12 +1,20 @@
-import { Box, Button, ButtonGroup, Chip, Stack, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Chip, Grid, Stack, Typography } from '@mui/material'
+import { GlassSurface } from './GlassSurface'
 import { Link } from 'react-router-dom'
 import { TaskAlt } from '@mui/icons-material'
 import PeopleIcon from '@mui/icons-material/People'
 
 const AppMenu = () => {
   return (
-    <>
-      <Stack direction="row" alignItems="center" sx={{ backgroundColor: 'important.main' }}>
+    <GlassSurface
+      sx={{
+        backgroundColor: 'important.dark',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+      }}
+    >
+      <Stack direction="row" alignItems="center">
         <Typography
           color="secondary"
           variant="h3"
@@ -17,17 +25,19 @@ const AppMenu = () => {
           TODO
         </Typography>
         <DevelopmentEnvIndicator />
-        <ButtonGroup variant="outlined" color="secondary" sx={{ p: 1 }}>
-          <Button component={Link} to="/" startIcon={<PeopleIcon />}>
-            Users
-          </Button>
+        <Grid container justifyContent="flex-end">
+          <ButtonGroup variant="outlined" color="secondary" sx={{ p: 1 }}>
+            <Button component={Link} to="/" startIcon={<PeopleIcon />}>
+              Users
+            </Button>
 
-          <Button component={Link} to="/1/todos" startIcon={<TaskAlt />}>
-            My Todos
-          </Button>
-        </ButtonGroup>
+            <Button component={Link} to="/1/todos" startIcon={<TaskAlt />}>
+              My Todos
+            </Button>
+          </ButtonGroup>
+        </Grid>
       </Stack>
-    </>
+    </GlassSurface>
   )
 }
 
@@ -42,6 +52,7 @@ export const AppFrame = (props: React.PropsWithChildren<unknown>) => {
       flexDirection="column"
       rowGap={2}
       sx={{
+        backgroundColor: 'important.light',
         width: '100hw',
         height: '100vh',
         overflow: 'auto',
