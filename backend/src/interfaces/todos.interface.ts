@@ -1,18 +1,17 @@
 import { CreateTodoDto, UpdateTodoDto } from "@/dtos/todos.dto"
-import { User } from "./users.interface"
 
 export interface Todo {
   id: string
   title: string
-  description: string
-  category: string
+  description?: string
+  category?: string
   completed: boolean
-  location: string
-  progress: number
+  location?: string
+  progress?: number
   startingDate: string
   createdAt: string
-  createdBy: User
-  performedBy: User
+  createdBy: string
+  performedBy: string
 }
 
 export interface TodoService {

@@ -3,65 +3,41 @@ import { Todo } from '@/interfaces/todos.interface'
 export const todoModel: Todo[] = [
   {
     id: '1',
-    title: 'title1',
-    description: 'description1',
+    title: 'Go to the gym with much energy',
+    description: 'Full body gym workout',
     category: 'sport',
     completed: false,
-    location: 'location1',
+    location: 'Nemes Fitness',
     progress: 0,
     startingDate: '2023-01-02',
     createdAt: '2023-01-01',
-    createdBy: {
-      id: '1',
-      email: 'example1@email.com',
-      password: '$2b$10$TBEfaCe1oo.2jfkBDWcj/usBj4oECsW2wOoDXpCa2IH9xqCpEK/hC',
-    },
-    performedBy: {
-      id: '1',
-      email: 'example1@email.com',
-      password: '$2b$10$TBEfaCe1oo.2jfkBDWcj/usBj4oECsW2wOoDXpCa2IH9xqCpEK/hC',
-    }
+    createdBy: '1',
+    performedBy: '1'
   },
   {
     id: '2',
-    title: 'title2',
-    description: 'description2',
-    category: 'other',
+    title: 'Cook lunch',
+    description: 'Cook lunch for the whole family',
+    category: 'food',
     completed: false,
-    location: 'location2',
+    location: '',
     progress: 0,
     startingDate: '2023-01-10',
     createdAt: '2023-01-01',
-    createdBy: {
-      id: '1',
-      email: 'example1@email.com',
-      password: '$2b$10$TBEfaCe1oo.2jfkBDWcj/usBj4oECsW2wOoDXpCa2IH9xqCpEK/hC',
-    },
-    performedBy: {
-      id: '2',
-      email: 'example2@email.com',
-      password: '$2b$10$TBEfaCe1oo.2jfkBDWcj/usBj4oECsW2wOoDXpCa2IH9xqCpEK/hC',
-    }
+    createdBy: '1',
+    performedBy: '2'
   },
   {
     id: '3',
-    title: 'title3',
-    description: 'description3',
+    title: 'Buy new headphones',
+    description: 'https://www.basys.hu/energy-headphones-2-bluetooth-blue.html',
     category: 'other',
-    completed: true,
-    location: 'location3',
-    progress: 0,
-    startingDate: '2023-01-04',
+    completed: false,
+    location: '',
+    progress: 50,
+    startingDate: '2023-01-15',
     createdAt: '2023-01-3',
-    createdBy: {
-      id: '2',
-      email: 'example2@email.com',
-      password: '$2b$10$TBEfaCe1oo.2jfkBDWcj/usBj4oECsW2wOoDXpCa2IH9xqCpEK/hC',
-    },
-    performedBy: {
-      id: '1',
-      email: 'example1@email.com',
-      password: '$2b$10$TBEfaCe1oo.2jfkBDWcj/usBj4oECsW2wOoDXpCa2IH9xqCpEK/hC',
-    }
-  }
+    createdBy: '1',
+    performedBy: '1'
+  },
 ]

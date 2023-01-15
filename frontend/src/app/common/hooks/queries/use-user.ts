@@ -1,21 +1,31 @@
 import { User } from '../../../user/models/User'
+import { useQuery } from 'react-query';
 
-export const useUserList = (): User[] => {
-  const user1: User = {
-    id: '1',
-    name: 'user1',
-    email: 'email1@email.com',
-    image: 'image1',
-    numberOfTodos: 1,
-  }
+export const useUsers = () => {
+  return useQuery<User[], unknown>(
+    ['users', 'list'],
+    async () => {
+      try {
+        const url = new URL(`/users`, process.env.API_URL)
+        const fetchResponse = await fetch(url.toString(), {
+          // headers: {
+          //   Authorization: `Bearer ${token}`,
+          // },
+        })
 
-  const user2: User = {
-    id: '2',
-    name: 'user2',
-    email: 'email2@email.com',
-    image: 'image2',
-    numberOfTodos: 3,
-  }
-
-  return [user1, user2]
+        if (fetchResponse.ok) {
+          return ((await fetchResponse.json()) as User[]) ?? []
+        } else {
+          throw new Error(fetchResponse.statusText)
+        }
+      } catch (e) {
+        throw new Error(`Failed get users`, { cause: e as Error })
+      }
+    },
+    {
+      enabled: true,
+      staleTime: 60 * 60 * 1000,
+      keepPreviousData: true,
+    }
+  )
 }

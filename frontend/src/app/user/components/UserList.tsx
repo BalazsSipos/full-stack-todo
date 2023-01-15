@@ -1,6 +1,6 @@
 import { CardContent, Grid, Stack, Typography } from '@mui/material'
 import { UserItem } from './UserItem'
-import { useUserList } from '../../common/hooks/queries/use-user'
+import { useUsers } from '../../common/hooks/queries/use-user'
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied'
 
 const EmptyListCard = () => (
@@ -11,7 +11,8 @@ const EmptyListCard = () => (
 )
 
 export const UserList = () => {
-  const userList = useUserList()
+  const usersQuery = useUsers()
+  const userList = usersQuery.data ?? []
 
   return (
     <Grid item xs={1}>

@@ -4,11 +4,11 @@ export class CreateTodoDto {
   @IsString()
   title: string
 
-  description: string
+  description?: string
   
-  category: string
+  category?: string
 
-  location: string
+  location?: string
 
   // @IsDate()
   startingDate: string
@@ -20,5 +20,5 @@ export class UpdateTodoDto extends CreateTodoDto {
     @IsInt()
     @Min(0)
     @Max(99)
-    progress: number
+    progress?: number
   }
