@@ -12,7 +12,7 @@ export class CreateUserDto {
 
   @IsString()
   @AutoMap()
-  public password: string
+  public password?: string
 }
 
 export class UserRpDto {
