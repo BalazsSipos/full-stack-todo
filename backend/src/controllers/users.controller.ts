@@ -1,11 +1,10 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Post, Put, UseAfter } from 'routing-controllers'
+import { Body, Delete, Get, HttpCode, JsonController, Param, Post, Put } from 'routing-controllers'
 import { CreateUserDto, UserRpDto } from '@dtos/users.dto'
 import { OpenAPI } from 'routing-controllers-openapi'
 import { TYPES } from '@/config/types'
 import { UserService } from '@interfaces/users.interface'
 import { inject } from 'inversify'
 import { injectable } from 'inversify'
-import { validationMiddleware } from '@middlewares/validation.middleware'
 
 @JsonController()
 @injectable()
@@ -20,17 +19,17 @@ export class UsersController {
     return findAllUsersData
   }
 
-  @Get('/users/:id')
+  @Get('/users/:email')
   @OpenAPI({ summary: 'Return find a user' })
-  async getUserById(@Param('id') userId: string) {
-    const findOneUserData: UserRpDto = await this.userService.findUserById(userId)
+  async getUserById(@Param('email') email: string) {
+    const findOneUserData: UserRpDto = await this.userService.findUserByEmail(email)
     return { data: findOneUserData, message: 'findOne' }
   }
 
   @Post('/users')
   @HttpCode(201)
   // @UseBefore(validationMiddleware(CreateUserDto, 'body'))
-  @UseAfter(validationMiddleware(CreateUserDto, 'body'))
+  // @UseAfter(validationMiddleware(CreateUserDto, 'body'))
   @OpenAPI({ summary: 'Create a new user' })
   async createUser(@Body() userData: CreateUserDto) {
     const createdUser: UserRpDto = await this.userService.createUser(userData)

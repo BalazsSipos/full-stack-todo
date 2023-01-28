@@ -38,16 +38,25 @@ export class UserServiceImpl implements UserService {
     return findUser
   }
 
+  public async findUserByEmail(email: string): Promise<UserRpDto> {
+    const findUser: UserRpDto = this.users.find((user) => user.email === email)
+    if (!findUser) throw new HttpException(409, "User doesn't exist")
+
+    return findUser
+  }
+
   public async createUser(userData: CreateUserDto): Promise<UserRpDto> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty')
 
-    const findUser: UserRpDto = this.users.find((user) => user.email === userData.email)
-    if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`)
+    const userEntity: UserEntity = await this.userRepository.findOneBy({
+      email: userData.email,
+    })
+    if (userEntity) throw new HttpException(409, `This email ${userData.email} already exists`)
 
-    const createUserData: UserRpDto = { id: String(this.users.length + 1), ...userData, numberOfTodos: 0 }
-    this.users = [...this.users, createUserData]
+    const newUserEntity: UserEntity = mapper.map(userData, CreateUserDto, UserEntity)
+    this.userRepository.save(newUserEntity)
 
-    return createUserData
+    return mapper.map(newUserEntity, UserEntity, UserRpDto)
   }
 
   public async updateUser(userId: string, userData: CreateUserDto): Promise<UserRpDto[]> {

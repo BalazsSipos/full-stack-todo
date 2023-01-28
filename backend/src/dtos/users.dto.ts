@@ -9,10 +9,6 @@ export class CreateUserDto {
   @IsString()
   @AutoMap()
   public name: string
-
-  @IsString()
-  @AutoMap()
-  public password: string
 }
 
 export class UserRpDto {

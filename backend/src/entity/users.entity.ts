@@ -18,8 +18,8 @@ export class UserEntity {
   @AutoMap()
   name: string
 
-  @Column()
-  password: string
+  @Column({ nullable: true })
+  password?: string
 
   @Column({ nullable: true })
   @AutoMap()

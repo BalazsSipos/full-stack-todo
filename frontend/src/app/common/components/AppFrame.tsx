@@ -1,10 +1,17 @@
+import { AuthContext } from './AuthContext'
 import { Box, Button, ButtonGroup, Chip, Grid, Stack, Typography } from '@mui/material'
 import { GlassSurface } from './GlassSurface'
 import { Link } from 'react-router-dom'
 import { TaskAlt } from '@mui/icons-material'
+import { auth } from '../config/firebaseSetup'
+import { useContext } from 'react'
+import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
 import PeopleIcon from '@mui/icons-material/People'
 
 const AppMenu = () => {
+  const user = useContext(AuthContext)
+
   return (
     <GlassSurface
       sx={{
@@ -30,10 +37,20 @@ const AppMenu = () => {
             <Button component={Link} to="/" startIcon={<PeopleIcon />}>
               Users
             </Button>
-
-            <Button component={Link} to="/1/todos" startIcon={<TaskAlt />}>
-              My Todos
-            </Button>
+            {user ? (
+              <Button component={Link} to="/1/todos" startIcon={<TaskAlt />}>
+                My Todos
+              </Button>
+            ) : (
+              <Button component={Link} to="/login" startIcon={<LoginIcon />}>
+                Login
+              </Button>
+            )}
+            {user && (
+              <Button component={Link} to="/" onClick={() => auth.signOut()} startIcon={<LogoutIcon />}>
+                Logout
+              </Button>
+            )}
           </ButtonGroup>
         </Grid>
       </Stack>
