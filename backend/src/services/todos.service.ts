@@ -1,11 +1,15 @@
-import { CreateTodoDto, UpdateTodoDto } from '@/dtos/todos.dto'
+import { CreateTodoDto, TodoRpDto, UpdateTodoDto } from '@/dtos/todos.dto'
 import { HttpException } from '@exceptions/HttpException'
+import { Repository } from 'typeorm'
 import { TYPES } from '@/config/types'
 import { Todo, TodoService } from '@/interfaces/todos.interface'
+import { TodoEntity } from '@/entity/todos.entity'
+import { TodoRepository } from '@/repositories/todos.repository'
 import { UserRpDto } from '@/dtos/users.dto'
 import { UserService } from '@interfaces/users.interface'
 import { inject, injectable } from 'inversify'
 import { isEmpty } from '@utils/util'
+import { mapper } from '@/mappings/mapper'
 import { todoModel } from '@/models/todos.model'
 
 @injectable()
@@ -15,9 +19,21 @@ export class TodoServiceImpl implements TodoService {
   @inject(TYPES.UserService)
   userService: UserService
 
-  public async findAllTodosByUser(userId: string): Promise<Todo[]> {
-    const todos: Todo[] = this.todos.filter((todo) => todo.createdBy === userId || todo.performedBy === userId)
-    return todos
+  private todoRepository: Repository<TodoEntity> = TodoRepository
+
+  public async findAllTodosByUser(userId: string): Promise<TodoRpDto[]> {
+    // const todos: Todo[] = this.todos.filter((todo) => todo.createdBy === userId || todo.performedBy === userId)
+    const todoEntities: TodoEntity[] = await this.todoRepository
+      .createQueryBuilder('todo')
+      .where('todo.createdBy.id = :creatorId', { creatorId: userId })
+      .orWhere('todo.performedBy.id = :performerId', { performerId: userId })
+      .getMany()
+    // .find({
+    //   where: [{ createdBy.id: userId }, { performedBy: userId }],
+    // })
+    // .filter((todo) => todo.createdBy === userId || todo.performedBy === userId)
+    const todoRpDtos: TodoRpDto[] = todoEntities.map((todoEntity) => mapper.map(todoEntity, TodoEntity, TodoRpDto))
+    return todoRpDtos
   }
 
   public async findTodoById(userId: string, todoId: string): Promise<Todo> {
@@ -84,7 +100,9 @@ export class TodoServiceImpl implements TodoService {
 
   public async deleteTodo(userId: string, todoId: string): Promise<Todo[]> {
     const findTodo: Todo = this.todos.find((todo) => todo.id === todoId)
-    if (!findTodo) { throw new HttpException(409, "Todo doesn't exist") }
+    if (!findTodo) {
+      throw new HttpException(409, "Todo doesn't exist")
+    }
     if (!this.isUserAffectedByTodo(userId, findTodo)) {
       throw new HttpException(401, "You're not allowed to delete this todo")
     }

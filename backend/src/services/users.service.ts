@@ -1,17 +1,33 @@
 import { CreateUserDto, UserRpDto } from '@dtos/users.dto'
 import { HttpException } from '@exceptions/HttpException'
+import { Repository } from 'typeorm'
+import { UserEntity } from '@/entity/users.entity'
+import { UserRepository } from '../repositories/users.repository'
 import { UserService } from '@interfaces/users.interface'
 import { injectable } from 'inversify'
 import { isEmpty } from '@utils/util'
+import { mapper } from '@/mappings/mapper'
 import { userModel } from '@models/users.model'
 
 @injectable()
 export class UserServiceImpl implements UserService {
   public users = userModel
 
+  private userRepository: Repository<UserEntity> = UserRepository
+
   public async findAllUser(): Promise<UserRpDto[]> {
     console.log('findAllUser')
-    const userRpDtos: UserRpDto[] = this.users
+    const userEntities: UserEntity[] = await this.userRepository.find({
+      relations: {
+        createdTodos: true,
+      },
+    })
+    console.log('userEntities', userEntities)
+    const userRpDtos: UserRpDto[] = userEntities.map((userEntity) => {
+      const userRpDto: UserRpDto = mapper.map(userEntity, UserEntity, UserRpDto)
+      userRpDto.numberOfTodos = userEntity.createdTodos.length
+      return userRpDto
+    })
     return userRpDtos
   }
 
