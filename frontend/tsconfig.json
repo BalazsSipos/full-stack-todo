@@ -3,10 +3,7 @@
     "incremental": true /* Save .tsbuildinfo files to allow for incremental compilation of projects. */,
     "tsBuildInfoFile": ".tmp/.tsbuildinfo" /* Specify the path to .tsbuildinfo incremental compilation file. */,
     "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "lib": ["ES2022", "dom"],
     "jsx": "react-jsx" /* Specify what JSX code is generated. */,
     "module": "ES2020" /* Specify what module code is generated. */,
     "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
@@ -23,7 +20,9 @@
     "noUnusedLocals": true /* Enable error reporting when local variables aren't read. */,
     "noImplicitReturns": false /* Enable error reporting for codepaths that do not explicitly return in a function. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": ["src", "api"],
   "exclude": ["node_modules", "dist", "build", "scripts", "packages"]

@@ -1,30 +1,30 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Post, Put, UseAfter } from 'routing-controllers';
-import { CreateUserDto, UserRpDto } from '@dtos/users.dto';
-import { OpenAPI } from 'routing-controllers-openapi';
-import { TYPES } from '@/config/types';
-import { UserService } from '@interfaces/users.interface';
-import { inject } from 'inversify';
-import { injectable } from 'inversify';
-import { validationMiddleware } from '@middlewares/validation.middleware';
+import { Body, Delete, Get, HttpCode, JsonController, Param, Post, Put, UseAfter } from 'routing-controllers'
+import { CreateUserDto, UserRpDto } from '@dtos/users.dto'
+import { OpenAPI } from 'routing-controllers-openapi'
+import { TYPES } from '@/config/types'
+import { UserService } from '@interfaces/users.interface'
+import { inject } from 'inversify'
+import { injectable } from 'inversify'
+import { validationMiddleware } from '@middlewares/validation.middleware'
 
 @JsonController()
 @injectable()
 export class UsersController {
   @inject(TYPES.UserService)
-  userService: UserService;
+  userService: UserService
 
   @Get('/users')
   @OpenAPI({ summary: 'Return a list of users' })
   async getUsers() {
-    const findAllUsersData: UserRpDto[] = await this.userService.findAllUser();
-    return findAllUsersData;
+    const findAllUsersData: UserRpDto[] = await this.userService.findAllUser()
+    return findAllUsersData
   }
 
   @Get('/users/:id')
   @OpenAPI({ summary: 'Return find a user' })
   async getUserById(@Param('id') userId: string) {
-    const findOneUserData: UserRpDto = await this.userService.findUserById(userId);
-    return { data: findOneUserData, message: 'findOne' };
+    const findOneUserData: UserRpDto = await this.userService.findUserById(userId)
+    return { data: findOneUserData, message: 'findOne' }
   }
 
   @Post('/users')
@@ -33,22 +33,22 @@ export class UsersController {
   @UseAfter(validationMiddleware(CreateUserDto, 'body'))
   @OpenAPI({ summary: 'Create a new user' })
   async createUser(@Body() userData: CreateUserDto) {
-    const createdUser: UserRpDto = await this.userService.createUser(userData);
-    return { data: createdUser, message: 'created' };
+    const createdUser: UserRpDto = await this.userService.createUser(userData)
+    return { data: createdUser, message: 'created' }
   }
 
   @Put('/users/:id')
   // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
   @OpenAPI({ summary: 'Update a user' })
   async updateUser(@Param('id') userId: string, @Body() userData: CreateUserDto) {
-    const updatedUser: UserRpDto[] = await this.userService.updateUser(userId, userData);
-    return { data: updatedUser, message: 'updated' };
+    const updatedUser: UserRpDto[] = await this.userService.updateUser(userId, userData)
+    return { data: updatedUser, message: 'updated' }
   }
 
   @Delete('/users/:id')
   @OpenAPI({ summary: 'Delete a user' })
   async deleteUser(@Param('id') userId: string) {
-    const deletedUser: UserRpDto[] = await this.userService.deleteUser(userId);
-    return { data: deletedUser, message: 'deleted' };
+    const deletedUser: UserRpDto[] = await this.userService.deleteUser(userId)
+    return { data: deletedUser, message: 'deleted' }
   }
 }

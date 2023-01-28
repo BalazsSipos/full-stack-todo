@@ -1,4 +1,4 @@
-import { CreateTodoDto, UpdateTodoDto } from "@/dtos/todos.dto"
+import { CreateTodoDto, TodoRpDto, UpdateTodoDto } from "@/dtos/todos.dto"
 
 export interface Todo {
   id: string
@@ -15,7 +15,7 @@ export interface Todo {
 }
 
 export interface TodoService {
-  findAllTodosByUser(userId: string): Promise<Todo[]>
+  findAllTodosByUser(userId: string): Promise<TodoRpDto[]>
   findTodoById(userId: string, todoId: string): Promise<Todo>
   createTodo(userId: string, todoData: CreateTodoDto): Promise<Todo>
   updateTodo(userId: string, todoId: string, todoData: UpdateTodoDto): Promise<Todo[]>

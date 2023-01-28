@@ -11,7 +11,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { StrictMode } from 'react'
 import { Todos } from './todo/pages/Todos'
 import { Users } from './user/pages/Users'
-import { queryClient, useQueryCacheReady } from './common/query/query-client'
+import { queryClient } from './common/query/query-client'
 import { useTheme } from './common/theme/use-theme'
 
 export const App = () => {
