@@ -1,117 +1,132 @@
-import { CreateTodoDto, TodoRpDto, UpdateTodoDto } from '@/dtos/todos.dto'
+import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '@/dtos/todos.dto'
 import { HttpException } from '@exceptions/HttpException'
-import { Repository } from 'typeorm'
 import { TYPES } from '@/config/types'
-import { Todo, TodoService } from '@/interfaces/todos.interface'
 import { TodoEntity } from '@/entity/todos.entity'
 import { TodoRepository } from '@/repositories/todos.repository'
-import { UserRpDto } from '@/dtos/users.dto'
+import { TodoService } from '@/interfaces/todos.interface'
+import { UserEntity } from '@/entity/users.entity'
 import { UserService } from '@interfaces/users.interface'
 import { inject, injectable } from 'inversify'
 import { isEmpty } from '@utils/util'
 import { mapper } from '@/mappings/mapper'
-import { todoModel } from '@/models/todos.model'
 
 @injectable()
 export class TodoServiceImpl implements TodoService {
-  public todos = todoModel
-
   @inject(TYPES.UserService)
   userService: UserService
 
-  private todoRepository: Repository<TodoEntity> = TodoRepository
+  private todoRepository = TodoRepository
 
-  public async findAllTodosByUser(userId: string): Promise<TodoRpDto[]> {
-    // const todos: Todo[] = this.todos.filter((todo) => todo.createdBy === userId || todo.performedBy === userId)
-    const todoEntities: TodoEntity[] = await this.todoRepository
-      .createQueryBuilder('todo')
-      .where('todo.createdBy.id = :creatorId', { creatorId: userId })
-      .orWhere('todo.performedBy.id = :performerId', { performerId: userId })
-      .getMany()
-    // .find({
-    //   where: [{ createdBy.id: userId }, { performedBy: userId }],
-    // })
-    // .filter((todo) => todo.createdBy === userId || todo.performedBy === userId)
+  public async findAllTodosByUser(userEmail: string): Promise<TodoRpDto[]> {
+    const todoEntities: TodoEntity[] = await this.todoRepository.findOpenTodosByUser(userEmail)
     const todoRpDtos: TodoRpDto[] = todoEntities.map((todoEntity) => mapper.map(todoEntity, TodoEntity, TodoRpDto))
     return todoRpDtos
   }
 
-  public async findTodoById(userId: string, todoId: string): Promise<Todo> {
-    const findTodo: Todo = this.todos.find((todo) => todo.id === todoId)
-    if (!findTodo) throw new HttpException(409, "Todo doesn't exist")
-    if (!this.isUserAffectedByTodo(userId, findTodo))
+  public async findTodoByUserEmailAndTodoId(email: string, todoId: string): Promise<TodoRpDto> {
+    const todoEntity: TodoEntity = await this.todoRepository.findOneBy({ id: Number(todoId) })
+    if (!todoEntity) throw new HttpException(409, "Todo doesn't exist")
+    if (!this.isUserAffectedByTodo(email, todoEntity))
       throw new HttpException(401, "You're not allowed to see this todo")
 
-    return findTodo
+    return mapper.map(todoEntity, TodoEntity, TodoRpDto)
   }
 
-  public async createTodo(userId: string, todoData: CreateTodoDto): Promise<Todo> {
+  public async createTodo(email: string, todoData: CreateTodoDto): Promise<TodoRpDto> {
     if (isEmpty(todoData)) throw new HttpException(400, 'todoData is empty')
+    const userEntity: UserEntity = await this.userService.findUserEntityByEmail(email)
+    if (!userEntity) throw new HttpException(409, "User doesn't exist")
 
-    const findUser: UserRpDto = await this.userService.findUserById(userId)
-    if (!findUser) throw new HttpException(409, "User doesn't exist")
+    const performedByUserEntity: UserEntity =
+      todoData.performedByEmail === email
+        ? userEntity
+        : await this.userService.findUserEntityByEmail(todoData.performedByEmail)
+    if (!performedByUserEntity) throw new HttpException(409, "performedBy user doesn't exist")
 
-    const performedByUser: UserRpDto =
-      todoData.performedBy === userId ? findUser : await this.userService.findUserById(todoData.performedBy)
-    if (!performedByUser) throw new HttpException(409, "performedBy user doesn't exist")
-
-    const createTodoData: Todo = {
-      id: String(this.todos.length + 1),
+    const createTodoData: TodoEntity = {
       ...todoData,
-      createdBy: userId,
+      startingDate: new Date(todoData.startingDate),
+      createdBy: userEntity,
       completed: false,
       progress: 0,
-      createdAt: String(new Date()),
-      performedBy: todoData.performedBy,
+      performedBy: performedByUserEntity,
     }
-    this.todos = [...this.todos, createTodoData]
 
-    return createTodoData
+    await this.todoRepository.save(createTodoData)
+
+    return mapper.map(createTodoData, TodoEntity, TodoRpDto)
   }
 
-  public async updateTodo(userId: string, todoId: string, todoData: UpdateTodoDto): Promise<Todo[]> {
-    if (isEmpty(todoData)) throw new HttpException(400, 'todoData is empty')
+  public async updateTodo(
+    email: string,
+    todoId: string,
+    todoData: UpdateTodoDto | CompleteTodoDto
+  ): Promise<TodoRpDto> {
+    if (Object.prototype.hasOwnProperty.call(todoData, 'completed')) {
+      return this.completeTodo(email, todoId, todoData as CompleteTodoDto)
+    } else {
+      return this.editTodo(email, todoId, todoData as UpdateTodoDto)
+    }
+  }
 
-    const findTodo: Todo = this.todos.find((todo) => todo.id === todoId)
-    if (!findTodo) throw new HttpException(409, "Todo doesn't exist")
-    if (!this.isUserAffectedByTodo(userId, findTodo)) {
+  public async deleteTodo(email: string, todoId: string): Promise<TodoRpDto> {
+    const todoEntity: TodoEntity = await this.todoRepository.findByTodoId(Number(todoId))
+    if (!todoEntity) throw new HttpException(409, "Todo doesn't exist")
+    if (todoEntity.createdBy.email !== email) {
       throw new HttpException(401, "You're not allowed to update this todo")
     }
-    const performedByUser: UserRpDto = await this.userService.findUserById(todoData.performedBy)
-    if (!performedByUser) throw new HttpException(409, "performedBy user doesn't exist")
-
-    const updateTodoData: Todo[] = this.todos.map((todo: Todo) => {
-      if (todo.id === findTodo.id) {
-        todo = {
-          id: todoId,
-          ...todoData,
-          createdBy: findTodo.createdBy,
-          completed: false,
-          createdAt: findTodo.createdAt,
-          performedBy: todoData.performedBy,
-        }
-      }
-      return todo
-    })
-    this.todos = updateTodoData
-
-    return updateTodoData
+    await this.todoRepository.delete(todoId)
+    return mapper.map(todoEntity, TodoEntity, TodoRpDto)
   }
 
-  public async deleteTodo(userId: string, todoId: string): Promise<Todo[]> {
-    const findTodo: Todo = this.todos.find((todo) => todo.id === todoId)
-    if (!findTodo) {
-      throw new HttpException(409, "Todo doesn't exist")
-    }
-    if (!this.isUserAffectedByTodo(userId, findTodo)) {
-      throw new HttpException(401, "You're not allowed to delete this todo")
-    }
-    const deleteTodoData: Todo[] = this.todos.filter((todo) => todo.id !== findTodo.id)
-    this.todos = deleteTodoData
-    return deleteTodoData
+  private isUserAffectedByTodo(email: string, todoEntity: TodoEntity): boolean {
+    return todoEntity.createdBy.email === email || todoEntity.performedBy.email === email
   }
 
-  private isUserAffectedByTodo(userId: string, todo: Todo): boolean {
-    return todo.createdBy === userId || todo.performedBy === userId
+  public async editTodo(email: string, todoId: string, todoData: UpdateTodoDto): Promise<TodoRpDto> {
+    const todoEntity: TodoEntity = await this.todoRepository.findByTodoId(Number(todoId))
+
+    this.validateTodoData(email, todoEntity, todoData)
+
+    const performedByUserEntity: UserEntity = await this.userService.findUserEntityByEmail(todoData.performedByEmail)
+    if (!performedByUserEntity) throw new HttpException(409, "performedBy user doesn't exist")
+
+    const updateTodoData: TodoEntity = {
+      ...todoData,
+      startingDate: new Date(todoData.startingDate),
+      createdBy: todoEntity.createdBy,
+      completed: todoEntity.completed,
+      progress: todoEntity.progress,
+      createdAt: todoEntity.createdAt,
+      performedBy: performedByUserEntity,
+    }
+
+    await this.todoRepository.save(updateTodoData)
+
+    return mapper.map(updateTodoData, TodoEntity, TodoRpDto)
+  }
+
+  public async completeTodo(email: string, todoId: string, todoData: CompleteTodoDto): Promise<TodoRpDto> {
+    const todoEntity: TodoEntity = await this.todoRepository.findByTodoId(Number(todoId))
+    this.validateTodoData(email, todoEntity, todoData)
+    const updateTodoData: TodoEntity = {
+      ...todoEntity,
+      completed: todoData.completed,
+    }
+    await this.todoRepository.save(updateTodoData)
+
+    return mapper.map(updateTodoData, TodoEntity, TodoRpDto)
+  }
+
+  private async validateTodoData(email: string, todoEntity: TodoEntity, todoData: any): Promise<void> {
+    if (isEmpty(todoData)) throw new HttpException(400, 'todoData is empty')
+    if (!todoEntity) throw new HttpException(409, "Todo doesn't exist")
+
+    const userEntity: UserEntity = await this.userService.findUserEntityByEmail(email)
+    if (!userEntity) throw new HttpException(409, "User doesn't exist")
+
+    if (!this.isUserAffectedByTodo(email, todoEntity)) {
+      throw new HttpException(401, "You're not allowed to update this todo")
+    }
   }
 }

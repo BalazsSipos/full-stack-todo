@@ -15,7 +15,7 @@ export class CreateTodoDto {
   // @IsDate()
   startingDate: string
 
-  performedBy: string
+  performedByEmail: string
 }
 
 export class UpdateTodoDto extends CreateTodoDto {
@@ -23,6 +23,10 @@ export class UpdateTodoDto extends CreateTodoDto {
   @Min(0)
   @Max(100)
   progress?: number
+}
+
+export class CompleteTodoDto {
+  completed: boolean
 }
 
 export class TodoRpDto {

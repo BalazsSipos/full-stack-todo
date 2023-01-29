@@ -40,21 +40,21 @@ type CategoryInfo = {
 }
 
 export const TodoItem = ({ todo }: { todo: Todo }) => {
-  const { userId } = useParams()
+  const { email } = useParams()
   const todoCategories: Map<string, CategoryInfo> = new Map()
   todoCategories.set('sport', { icon: SportsRugbyTwoToneIcon, backgroundColor: 'info.main' })
   todoCategories.set('food', { icon: LunchDiningTwoToneIcon, backgroundColor: 'secondary' })
 
   const [editMode, setEditMode] = useState(false)
-  const patchTodo = useTodoPatch(String(userId))
-  const deleteTodo = useTodoDelete(String(userId))
+  const patchTodo = useTodoPatch(email ?? '', Number(todo.id))
+  const deleteTodo = useTodoDelete(email ?? '', Number(todo.id))
 
   const completed = () => {
-    patchTodo.mutate({ id: todo.id, completed: true })
+    patchTodo.mutate({ completed: true })
   }
 
   const deleted = () => {
-    deleteTodo.mutate({ id: todo.id })
+    deleteTodo.mutate()
   }
 
   const getIcon = (category: string) => {
@@ -121,12 +121,12 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           </Typography>
         )}
         <List dense disablePadding>
-        <ListItem>
-          <ListItemIcon>
-            <Tooltip title={todo.category}>{getIcon(todo.category)}</Tooltip>
-          </ListItemIcon>
-          <ListItemText primary={todo.description} />
-        </ListItem>
+          <ListItem>
+            <ListItemIcon>
+              <Tooltip title={todo.category}>{getIcon(todo.category)}</Tooltip>
+            </ListItemIcon>
+            <ListItemText primary={todo.description} />
+          </ListItem>
           <Stack direction="row">
             <ListItem>
               <ListItemIcon>
@@ -181,8 +181,9 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           </Stack>
           <Grid container justifyContent="flex-end">
             <Stack direction="row">
-              <Chip label={todo.createdBy} color="primary" size="small" sx={{ mx: 1 }} /> <ForwardTwoToneIcon />
-              <Chip label={todo.performedBy} color="primary" size="small" />
+              <Chip label={todo.createdBy.email.substring(0, 6)} color="primary" size="small" sx={{ mx: 1 }} />{' '}
+              <ForwardTwoToneIcon />
+              <Chip label={todo.performedBy.email.substring(0, 6)} color="primary" size="small" />
             </Stack>
           </Grid>
         </>

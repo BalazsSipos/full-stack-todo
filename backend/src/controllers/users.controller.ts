@@ -1,4 +1,4 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Post, Put } from 'routing-controllers'
+import { Body, Get, HttpCode, JsonController, Param, Post } from 'routing-controllers'
 import { CreateUserDto, UserRpDto } from '@dtos/users.dto'
 import { OpenAPI } from 'routing-controllers-openapi'
 import { TYPES } from '@/config/types'
@@ -34,20 +34,5 @@ export class UsersController {
   async createUser(@Body() userData: CreateUserDto) {
     const createdUser: UserRpDto = await this.userService.createUser(userData)
     return { data: createdUser, message: 'created' }
-  }
-
-  @Put('/users/:id')
-  // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
-  @OpenAPI({ summary: 'Update a user' })
-  async updateUser(@Param('id') userId: string, @Body() userData: CreateUserDto) {
-    const updatedUser: UserRpDto[] = await this.userService.updateUser(userId, userData)
-    return { data: updatedUser, message: 'updated' }
-  }
-
-  @Delete('/users/:id')
-  @OpenAPI({ summary: 'Delete a user' })
-  async deleteUser(@Param('id') userId: string) {
-    const deletedUser: UserRpDto[] = await this.userService.deleteUser(userId)
-    return { data: deletedUser, message: 'deleted' }
   }
 }

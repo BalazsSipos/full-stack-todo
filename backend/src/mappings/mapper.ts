@@ -1,9 +1,9 @@
+import { CreateTodoDto, TodoRpDto } from '@/dtos/todos.dto'
 import { CreateUserDto, UserRpDto } from '@/dtos/users.dto'
 import { TodoEntity } from '@/entity/todos.entity'
-import { TodoRpDto } from '@/dtos/todos.dto'
 import { UserEntity } from '@/entity/users.entity'
 import { classes } from '@automapper/classes'
-import { createMap, createMapper, typeConverter } from '@automapper/core'
+import { createMap, createMapper, forMember, mapFrom, typeConverter } from '@automapper/core'
 
 // Create and export the mapper
 export const mapper = createMapper({
@@ -12,9 +12,19 @@ export const mapper = createMapper({
 
 createMap(mapper, UserEntity, UserRpDto)
 createMap(mapper, CreateUserDto, UserEntity)
+createMap(mapper, TodoEntity, TodoRpDto)
+createMap(mapper, TodoRpDto, TodoEntity)
 createMap(
   mapper,
+  CreateTodoDto,
   TodoEntity,
-  TodoRpDto,
-  typeConverter(Date, String, (date) => date.toDateString())
+  forMember(
+    (d) => d.completed,
+    mapFrom(() => false)
+  ),
+  forMember(
+    (d) => d.progress,
+    mapFrom(() => 0)
+  ),
+  typeConverter(String, Date, (date) => new Date(date))
 )

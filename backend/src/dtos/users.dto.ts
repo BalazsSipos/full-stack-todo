@@ -13,8 +13,6 @@ export class CreateUserDto {
 
 export class UserRpDto {
   @AutoMap()
-  id: string
-  @AutoMap()
   email: string
   @AutoMap()
   name: string

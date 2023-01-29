@@ -15,19 +15,20 @@ interface Props {
 }
 
 export const TodoForm = ({ todo, onFinish }: Props) => {
-  const { userId } = useParams()
+  const params = useParams()
+  const email = params['email']
   const form = useRef<HTMLFormElement | null>()
   const [startingDate, setStartingDate] = useState(todo?.startingDate ? DateTime.fromISO(todo.startingDate) : null)
-  const [createdAt, setCreatedAt] = useState(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
+  // const [createdAt, setCreatedAt] = useState(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
 
-  const createTodo = useTodoCreation(String(userId))
-  const updateTodo = useTodoPatch(String(userId))
+  const createTodo = useTodoCreation(String(email))
+  const updateTodo = useTodoPatch(String(email), Number(todo?.id))
 
   const loading = createTodo.isLoading || updateTodo.isLoading
 
   const reset = () => {
     form.current?.reset()
-    setCreatedAt(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
+    // setCreatedAt(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
     setStartingDate(todo?.startingDate ? DateTime.fromISO(todo.startingDate) : null)
   }
 
@@ -38,7 +39,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
   }
 
   const save = () => {
-    if (!form.current || !userId) {
+    if (!form.current || !email) {
       return
     }
     if (!form.current.reportValidity()) {
@@ -51,13 +52,10 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
       title: (data.get('title') as string) ?? '',
       description: (data.get('description') as string) ?? '',
       category: (data.get('category') as string) ?? '',
-      completed: false,
       location: (data.get('location') as string) ?? '',
       progress: Number(data.get('progress')) ?? 0,
       startingDate: startingDate?.toISODate() ?? undefined,
-      createdAt: createdAt?.toISODate() ?? undefined,
-      createdBy: userId,
-      performedBy: (data.get('performedBy') as string) ?? '',
+      performedByEmail: (data.get('performedBy') as string) ?? '',
     }
     if (todo) {
       console.log('update', newTodo)
@@ -93,7 +91,12 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
               <TextField name="startingDate" {...params} helperText={params?.inputProps?.placeholder} />
             )}
           />
-          <TextField name="performedBy" label="Performed by" defaultValue={todo?.performedBy} disabled={loading} />
+          <TextField
+            name="performedBy"
+            label="Performed by"
+            defaultValue={todo?.performedBy.email}
+            disabled={loading}
+          />
         </Stack>
       </CardContent>
       <CardActions>

@@ -7,7 +7,7 @@ import { UserEntity } from './users.entity'
 export class TodoEntity {
   @PrimaryGeneratedColumn()
   @AutoMap()
-  id: number
+  id?: number
 
   @Column()
   @AutoMap()
@@ -19,7 +19,7 @@ export class TodoEntity {
 
   @Column({ default: 'other' })
   @AutoMap()
-  category: string
+  category?: string
 
   @Column({ default: false })
   @AutoMap()
@@ -44,7 +44,7 @@ export class TodoEntity {
   @Column()
   @CreateDateColumn()
   @AutoMap()
-  createdAt: Date
+  createdAt?: Date
 
   // @Column()
   @ManyToOne(() => UserEntity, (user) => user.createdTodos)
