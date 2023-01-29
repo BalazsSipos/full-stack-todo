@@ -1,25 +1,26 @@
 import { CreateUserDto, UserRpDto } from '@dtos/users.dto'
 import { HttpException } from '@exceptions/HttpException'
-import { Repository } from 'typeorm'
 import { UserEntity } from '@/entity/users.entity'
 import { UserRepository } from '../repositories/users.repository'
 import { UserService } from '@interfaces/users.interface'
 import { injectable } from 'inversify'
 import { isEmpty } from '@utils/util'
 import { mapper } from '@/mappings/mapper'
-import { userModel } from '@models/users.model'
 
 @injectable()
 export class UserServiceImpl implements UserService {
-  public users = userModel
-
-  private userRepository: Repository<UserEntity> = UserRepository
+  private userRepository = UserRepository
 
   public async findAllUser(): Promise<UserRpDto[]> {
     console.log('findAllUser')
     const userEntities: UserEntity[] = await this.userRepository.find({
       relations: {
         createdTodos: true,
+      },
+      where: {
+        createdTodos: {
+          completed: false,
+        },
       },
     })
     console.log('userEntities', userEntities)
@@ -31,57 +32,27 @@ export class UserServiceImpl implements UserService {
     return userRpDtos
   }
 
-  public async findUserById(userId: string): Promise<UserRpDto> {
-    const findUser: UserRpDto = this.users.find((user) => user.id === userId)
-    if (!findUser) throw new HttpException(409, "User doesn't exist")
-
-    return findUser
+  public async findUserByEmail(email: string): Promise<UserRpDto> {
+    const userEntity: UserEntity = await this.findUserEntityByEmail(email)
+    return mapper.map(userEntity, UserEntity, UserRpDto)
   }
 
-  public async findUserByEmail(email: string): Promise<UserRpDto> {
-    const findUser: UserRpDto = this.users.find((user) => user.email === email)
-    if (!findUser) throw new HttpException(409, "User doesn't exist")
+  public async findUserEntityByEmail(email: string): Promise<UserEntity> {
+    const userEntity: UserEntity = await this.userRepository.findByEmail(email)
+    if (!userEntity) throw new HttpException(409, "User doesn't exist")
 
-    return findUser
+    return userEntity
   }
 
   public async createUser(userData: CreateUserDto): Promise<UserRpDto> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty')
 
-    const userEntity: UserEntity = await this.userRepository.findOneBy({
-      email: userData.email,
-    })
+    const userEntity: UserEntity = await this.userRepository.findByEmail(userData.email)
     if (userEntity) throw new HttpException(409, `This email ${userData.email} already exists`)
 
     const newUserEntity: UserEntity = mapper.map(userData, CreateUserDto, UserEntity)
-    this.userRepository.save(newUserEntity)
+    await this.userRepository.save(newUserEntity)
 
     return mapper.map(newUserEntity, UserEntity, UserRpDto)
-  }
-
-  public async updateUser(userId: string, userData: CreateUserDto): Promise<UserRpDto[]> {
-    if (isEmpty(userData)) throw new HttpException(400, 'userData is empty')
-
-    const findUser: UserRpDto = this.users.find((user) => user.id === userId)
-    if (!findUser) throw new HttpException(409, "User doesn't exist")
-
-    const updateUserData: UserRpDto[] = this.users.map((user: UserRpDto) => {
-      if (user.id === findUser.id) {
-        user = { id: userId, ...userData, numberOfTodos: findUser.numberOfTodos }
-      }
-      return user
-    })
-    this.users = updateUserData
-
-    return updateUserData
-  }
-
-  public async deleteUser(userId: string): Promise<UserRpDto[]> {
-    const findUser: UserRpDto = this.users.find((user) => user.id === userId)
-    if (!findUser) throw new HttpException(409, "User doesn't exist")
-
-    const deleteUserData: UserRpDto[] = this.users.filter((user) => user.id !== findUser.id)
-    this.users = deleteUserData
-    return deleteUserData
   }
 }

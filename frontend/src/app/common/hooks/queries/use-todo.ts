@@ -1,13 +1,12 @@
 import { Todo } from '../../../todo/models/Todo'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
-export const useTodos = (userId: string) => {
-
+export const useTodos = (userEmail: string) => {
   return useQuery<Todo[], unknown>(
-    ['todos', 'list', userId],
+    ['todos', 'list', userEmail],
     async () => {
       try {
-        const url = new URL(`/users/${userId}/todos`, process.env.API_URL)
+        const url = new URL(`/users/${userEmail}/todos`, process.env.API_URL)
         const fetchResponse = await fetch(url.toString(), {
           // headers: {
           //   Authorization: `Bearer ${token}`,
@@ -20,7 +19,7 @@ export const useTodos = (userId: string) => {
           throw new Error(fetchResponse.statusText)
         }
       } catch (e) {
-        throw new Error(`Failed get todos of user ${userId}`, { cause: e as Error })
+        throw new Error(`Failed get todos of user ${userEmail}`, { cause: e as Error })
       }
     },
     {
@@ -31,14 +30,13 @@ export const useTodos = (userId: string) => {
   )
 }
 
-
-export const useTodoCreation = (userId: string) => {
+export const useTodoCreation = (email: string) => {
   const queryClient = useQueryClient()
 
   return useMutation(
     async (todo: Partial<Todo>) => {
       try {
-        const url = new URL(`/users/${userId}/todos`, process.env.API_URL)
+        const url = new URL(`/users/${email}/todos`, process.env.API_URL)
 
         const response = await fetch(url.toString(), {
           method: 'POST',
@@ -57,18 +55,19 @@ export const useTodoCreation = (userId: string) => {
       }
     },
     {
-      onSuccess: () => queryClient.invalidateQueries(['todos']),
+      onSuccess: () =>
+        Promise.all([queryClient.invalidateQueries(['todos']), queryClient.invalidateQueries(['users', 'list'])]),
     }
   )
 }
 
-export const useTodoPatch = (userId: string) => {
+export const useTodoPatch = (email: string, todoId: number) => {
   const queryClient = useQueryClient()
 
   return useMutation(
     async (todo: Partial<Todo>) => {
       try {
-        const url = new URL(`/users/${userId}/todos/${todo.id}`, process.env.API_URL)
+        const url = new URL(`/users/${email}/todos/${todoId}`, process.env.API_URL)
         const response = await fetch(url.toString(), {
           method: 'PATCH',
           headers: {
@@ -86,27 +85,26 @@ export const useTodoPatch = (userId: string) => {
       }
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['todos'])
-      }
+      onSuccess: () =>
+        Promise.all([queryClient.invalidateQueries(['todos']), queryClient.invalidateQueries(['users', 'list'])]),
     }
   )
 }
 
-export const useTodoDelete = (userId: string) => {
+export const useTodoDelete = (email: string, todoId: number) => {
   const queryClient = useQueryClient()
 
   return useMutation(
-    async (todo: Partial<Todo>) => {
+    async () => {
       try {
-        const url = new URL(`/users/${userId}/todos/${todo.id}`, process.env.API_URL)
+        const url = new URL(`/users/${email}/todos/${todoId}`, process.env.API_URL)
 
         const response = await fetch(url.toString(), {
           method: 'DELETE',
           headers: {
             // Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-          }
+          },
         })
 
         if (!response.ok) {
@@ -117,7 +115,8 @@ export const useTodoDelete = (userId: string) => {
       }
     },
     {
-      onSuccess: () => queryClient.invalidateQueries(['todos']),
+      onSuccess: () =>
+        Promise.all([queryClient.invalidateQueries(['todos']), queryClient.invalidateQueries(['users', 'list'])]),
     }
   )
 }

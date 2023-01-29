@@ -1,4 +1,5 @@
 import { CreateUserDto, UserRpDto } from '@/dtos/users.dto'
+import { UserEntity } from '@/entity/users.entity'
 
 export interface User {
   id: string
@@ -8,9 +9,7 @@ export interface User {
 
 export interface UserService {
   findAllUser(): Promise<UserRpDto[]>
-  findUserById(userId: string): Promise<UserRpDto>
   findUserByEmail(email: string): Promise<UserRpDto>
+  findUserEntityByEmail(email: string): Promise<UserEntity>
   createUser(userData: CreateUserDto): Promise<UserRpDto>
-  updateUser(userId: string, userData: CreateUserDto): Promise<UserRpDto[]>
-  deleteUser(userId: string): Promise<UserRpDto[]>
 }

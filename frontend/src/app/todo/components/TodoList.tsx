@@ -16,9 +16,8 @@ const EmptyListCard = () => (
 )
 
 export const TodoList = () => {
-  const { userId } = useParams();
-  console.log(userId)
-  const todosQuery = useTodos(String(userId))
+  const { email } = useParams()
+  const todosQuery = useTodos(email ?? '')
 
   const todoList = todosQuery.data ?? []
 

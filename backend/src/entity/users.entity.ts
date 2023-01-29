@@ -1,15 +1,11 @@
 import { AutoMap } from '@automapper/classes'
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm'
 import { IsEmail } from 'class-validator'
 import { TodoEntity } from './todos.entity'
 
 @Entity('users')
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  @AutoMap()
-  id: number
-
-  @Column({ unique: true })
+  @PrimaryColumn()
   @IsEmail()
   @AutoMap()
   email: string

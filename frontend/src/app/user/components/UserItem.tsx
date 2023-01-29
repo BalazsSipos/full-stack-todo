@@ -8,10 +8,10 @@ export const UserItem = ({ user }: { user: User }) => {
         <Avatar variant="rounded" src="avatar1.jpg" />
         <Stack sx={{ pl: 2 }} spacing={0.5}>
           <Typography fontWeight={700} color="primary.main">
-            {user.name}
+            {user.email} ({user.name})
           </Typography>
           <Typography fontWeight={700} color="secondary.main">
-            {user.numberOfTodos} todo{user.numberOfTodos > 1 ? 's' : ''}
+            Created {user.numberOfTodos} todo{user.numberOfTodos > 1 ? 's' : ''}
           </Typography>
         </Stack>
       </Box>

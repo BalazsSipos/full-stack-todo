@@ -38,7 +38,7 @@ const AppMenu = () => {
               Users
             </Button>
             {user ? (
-              <Button component={Link} to="/1/todos" startIcon={<TaskAlt />}>
+              <Button component={Link} to={`/${user.email}/todos`} startIcon={<TaskAlt />}>
                 My Todos
               </Button>
             ) : (

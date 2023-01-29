@@ -9,7 +9,11 @@ export const AuthProvider = (props: PropsWithChildren<unknown>) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      firebaseUser ? setUser(convertFirebaseUserToUser(firebaseUser)) : setUser(null)
+      if (firebaseUser) {
+        setUser(convertFirebaseUserToUser(firebaseUser))
+      } else {
+        setUser(null)
+      }
     })
 
     return unsubscribe
