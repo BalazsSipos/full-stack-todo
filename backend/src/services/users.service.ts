@@ -1,11 +1,11 @@
-import { CreateUserDto, UserRpDto } from 'dtos/users.dto'
-import { HttpException } from 'exceptions/HttpException'
-import { UserEntity } from 'entity/users.entity'
-import { UserRepository } from 'repositories/users.repository'
-import { UserService } from 'interfaces/users.interface'
+import { CreateUserDto, UserRpDto } from '../dtos/users.dto'
+import { HttpException } from '../exceptions/HttpException'
+import { UserEntity } from '../entity/users.entity'
+import { UserRepository } from '../repositories/users.repository'
+import { UserService } from '../interfaces/users.interface'
 import { injectable } from 'inversify'
-import { isEmpty } from 'class-validator'
-import { mapper } from 'mappings/mapper'
+import { isEmpty } from '@automapper/core'
+import { mapper } from '../mappings/mapper'
 
 @injectable()
 export class UserServiceImpl implements UserService {

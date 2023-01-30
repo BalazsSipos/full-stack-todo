@@ -1,4 +1,4 @@
-import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from 'dtos/todos.dto'
+import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '../dtos/todos.dto'
 
 export interface Todo {
   id: string

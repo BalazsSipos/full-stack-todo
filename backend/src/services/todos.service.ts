@@ -1,14 +1,14 @@
-import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from "dtos/todos.dto"
-import { HttpException } from "exceptions/HttpException"
-import { TYPES } from "config/types"
-import { TodoEntity } from "entity/todos.entity"
-import { TodoRepository } from "repositories/todos.repository"
-import { TodoService } from "interfaces/todos.interface"
-import { UserEntity } from "entity/users.entity"
-import { UserService } from "interfaces/users.interface"
-import { inject, injectable } from "inversify"
-import { isEmpty } from "class-validator"
-import { mapper } from "mappings/mapper"
+import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '../dtos/todos.dto'
+import { HttpException } from '../exceptions/HttpException'
+import { TYPES } from '../config/types'
+import { TodoEntity } from '../entity/todos.entity'
+import { TodoRepository } from '../repositories/todos.repository'
+import { TodoService } from '../interfaces/todos.interface'
+import { UserEntity } from '../entity/users.entity'
+import { UserService } from '../interfaces/users.interface'
+import { inject, injectable } from 'inversify'
+import { isEmpty } from '@automapper/core'
+import { mapper } from '../mappings/mapper'
 
 @injectable()
 export class TodoServiceImpl implements TodoService {
