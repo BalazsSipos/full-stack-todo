@@ -4,6 +4,7 @@ import { myContainer } from './config/inversify.config'
 import { useContainer, useExpressServer } from 'routing-controllers'
 import errorMiddleware from './middlewares/error.middleware'
 import express from 'express'
+import path from 'path'
 
 class App {
   public app: express.Application
@@ -25,7 +26,9 @@ class App {
   public listen() {
     this.app.listen(this.port, () => {
       console.log(`App listening on the port ${this.port}`)
-      console.log('dirname', __dirname + '/../**/*.entity.{js,ts}')
+      console.log('dirname', `${__dirname}/../**/*.entity.{js,ts}`)
+      console.log('path', path.join(__dirname, '../**/*.entity.{js,ts}'))
+      console.log('path', path.parse(`${__dirname}/..`))
     })
   }
 
