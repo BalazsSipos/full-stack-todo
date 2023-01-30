@@ -3,12 +3,12 @@ import firebase from 'firebase/compat/app'
 
 // Environment variables should be used later
 const firebaseConfig = {
-  apiKey: 'AIzaSyAsEZc39iI_smVBWQEIiFNZZHXTktMbIws',
-  authDomain: 'pet-todo-9d11d.firebaseapp.com',
-  projectId: 'pet-todo-9d11d',
-  storageBucket: 'pet-todo-9d11d.appspot.com',
-  messagingSenderId: '399900705485',
-  appId: '1:399900705485:web:f471a66c6bb5e86480df84',
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
 }
 
 firebase.initializeApp(firebaseConfig)
