@@ -19,7 +19,7 @@ export const UserList = () => {
       <Stack sx={{ m: 3 }} spacing={2}>
         <Typography variant="h6">List of users</Typography>
         {userList.map((userItem) => (
-          <UserItem user={userItem} key={userItem.id} />
+          <UserItem user={userItem} key={userItem.email} />
         ))}
         {userList.length ? null : <EmptyListCard />}
       </Stack>
