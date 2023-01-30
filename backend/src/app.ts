@@ -1,8 +1,8 @@
 import { AppDataSource } from './data-source'
-import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from 'config'
-import { myContainer } from 'config/inversify.config'
+import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from './config'
+import { myContainer } from './config/inversify.config'
 import { useContainer, useExpressServer } from 'routing-controllers'
-import errorMiddleware from 'middlewares/error.middleware'
+import errorMiddleware from './middlewares/error.middleware'
 import express from 'express'
 
 class App {

@@ -1,11 +1,11 @@
 import { Container } from 'inversify'
 import { TYPES } from './types'
-import { TodoService } from 'interfaces/todos.interface'
-import { TodoServiceImpl } from 'services/todos.service'
-import { TodosController } from 'controllers/todos.controller'
-import { UserService } from 'interfaces/users.interface'
-import { UserServiceImpl } from 'services/users.service'
-import { UsersController } from 'controllers/users.controller'
+import { TodoService } from '../interfaces/todos.interface'
+import { TodoServiceImpl } from '../services/todos.service'
+import { TodosController } from '../controllers/todos.controller'
+import { UserService } from '../interfaces/users.interface'
+import { UserServiceImpl } from '../services/users.service'
+import { UsersController } from '../controllers/users.controller'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const Controllers: Function[] = [UsersController, TodosController]

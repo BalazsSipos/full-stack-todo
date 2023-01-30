@@ -1,10 +1,9 @@
 import { Body, Get, HttpCode, JsonController, Param, Post } from 'routing-controllers'
-import { CreateUserDto, UserRpDto } from 'dtos/users.dto'
+import { CreateUserDto, UserRpDto } from '../dtos/users.dto'
 import { OpenAPI } from 'routing-controllers-openapi'
-import { TYPES } from 'config/types'
-import { UserService } from 'interfaces/users.interface'
-import { inject } from 'inversify'
-import { injectable } from 'inversify'
+import { TYPES } from '../config/types'
+import { UserService } from '../interfaces/users.interface'
+import { inject, injectable } from 'inversify'
 
 @JsonController()
 @injectable()
