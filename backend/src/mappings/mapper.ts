@@ -1,7 +1,7 @@
-import { CreateTodoDto, TodoRpDto } from '@/dtos/todos.dto'
-import { CreateUserDto, UserRpDto } from '@/dtos/users.dto'
-import { TodoEntity } from '@/entity/todos.entity'
-import { UserEntity } from '@/entity/users.entity'
+import { CreateTodoDto, TodoRpDto } from 'dtos/todos.dto'
+import { CreateUserDto, UserRpDto } from 'dtos/users.dto'
+import { TodoEntity } from 'entity/todos.entity'
+import { UserEntity } from 'entity/users.entity'
 import { classes } from '@automapper/classes'
 import { createMap, createMapper, forMember, mapFrom, typeConverter } from '@automapper/core'
 
