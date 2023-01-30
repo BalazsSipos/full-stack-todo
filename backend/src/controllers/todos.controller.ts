@@ -1,8 +1,8 @@
 import { Body, Delete, Get, HttpCode, JsonController, Param, Patch, Post } from 'routing-controllers'
-import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '@/dtos/todos.dto'
+import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from 'dtos/todos.dto'
 import { OpenAPI } from 'routing-controllers-openapi'
-import { TYPES } from '@/config/types'
-import { TodoService } from '@/interfaces/todos.interface'
+import { TYPES } from 'config/types'
+import { TodoService } from 'interfaces/todos.interface'
 import { inject, injectable } from 'inversify'
 
 @JsonController()

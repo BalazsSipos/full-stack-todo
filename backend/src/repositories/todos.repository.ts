@@ -1,5 +1,5 @@
-import { AppDataSource } from '@/data-source'
-import { TodoEntity } from '@/entity/todos.entity'
+import { AppDataSource } from 'data-source'
+import { TodoEntity } from 'entity/todos.entity'
 
 export const TodoRepository = AppDataSource.getRepository(TodoEntity).extend({
   findByTodoId(todoId: number) {
