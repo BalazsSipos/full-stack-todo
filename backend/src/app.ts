@@ -4,6 +4,7 @@ import { myContainer } from './config/inversify.config'
 import { useContainer, useExpressServer } from 'routing-controllers'
 import errorMiddleware from './middlewares/error.middleware'
 import express from 'express'
+import fs from 'fs'
 import path from 'path'
 
 class App {
@@ -25,6 +26,18 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
+      const read = fs.readdir(path.join(__dirname, '/entity/'), function (err, files) {
+        //handling error
+        if (err) {
+          return console.log('Unable to scan directory: ' + err)
+        }
+        //listing all files using forEach
+        files.forEach(function (file) {
+          // Do whatever you want to do with the file
+          console.log(file)
+        })
+      })
+      console.log('read', read)
       console.log(`App listening on the port ${this.port}`)
       console.log('dirname', `${__dirname}/../**/*.entity.{js,ts}`)
       console.log('path', path.join(__dirname, '../entity/*.entity.{js,ts}'))
