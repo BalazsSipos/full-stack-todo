@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from './config'
 import { DataSource } from 'typeorm'
+import path from 'path'
 // import { TodoEntity } from './entity/todos.entity'
 // import { UserEntity } from './entity/users.entity'
 
@@ -16,7 +17,8 @@ export const AppDataSource = new DataSource({
   logging: true,
   // entities: [UserEntity, TodoEntity],
   // entities: [__dirname + '/**/*.entity.{js,ts}'],
-  entities: ['./**/*.entity.{js,ts}'],
+  entities: [path.join(__dirname, '/entity/*.entity.{js,ts}')],
+  // entities: ['./**/*.entity.{js,ts}'],
   subscribers: [],
   migrations: [],
 })
