@@ -69,6 +69,8 @@ class App {
     AppDataSource.initialize()
       .then(() => {
         // here you can start to work with your database
+        console.log('Database connected')
+        console.log('AppDataSource', AppDataSource)
       })
       .catch((error) => console.log(error))
   }
