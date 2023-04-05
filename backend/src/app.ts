@@ -5,6 +5,7 @@ import { useContainer, useExpressServer } from 'routing-controllers'
 import errorMiddleware from './middlewares/error.middleware'
 import express from 'express'
 import fs from 'fs'
+import { readdirSync } from 'fs'
 import path from 'path'
 
 class App {
@@ -42,6 +43,13 @@ class App {
       console.log('dirname', `${__dirname}/../**/*.entity.{js,ts}`)
       console.log('path', path.join(__dirname, '../entity/*.entity.{js,ts}'))
       console.log('path', path.parse(`${__dirname}/..`))
+
+      const getDirectories = (source) =>
+        readdirSync(source, { withFileTypes: true })
+          .filter((dirent) => dirent.isDirectory())
+          .map((dirent) => dirent.name)
+
+      console.log('getDirectories', getDirectories(`${__dirname}`))
     })
   }
 
@@ -69,8 +77,6 @@ class App {
     AppDataSource.initialize()
       .then(() => {
         // here you can start to work with your database
-        console.log('Database connected')
-        console.log('AppDataSource', AppDataSource)
       })
       .catch((error) => console.log(error))
   }
