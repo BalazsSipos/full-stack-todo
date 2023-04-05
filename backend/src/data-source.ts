@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from './config'
-import { createConnection } from 'typeorm'
+import { DataSource } from 'typeorm'
 // import { TodoEntity } from './entity/todos.entity'
 // import { UserEntity } from './entity/users.entity'
 
 // export const AppDataSource = new DataSource({
-export const AppDataSource = await createConnection({
+export const AppDataSource = new DataSource({
   type: 'postgres',
   host: DB_HOST,
   port: Number(DB_PORT),
