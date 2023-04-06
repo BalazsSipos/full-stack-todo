@@ -8,12 +8,14 @@ export const useUsers = () => {
     async () => {
       try {
         const url = new URL(`/users`, process.env.API_URL)
+        console.log('url', url)
         const fetchResponse = await fetch(url.toString(), {
           // headers: {
           //   Authorization: `Bearer ${token}`,
           // },
         })
 
+        console.log('fetchResponse', fetchResponse)
         if (fetchResponse.ok) {
           return ((await fetchResponse.json()) as User[]) ?? []
         } else {
@@ -70,6 +72,7 @@ export const useUserCreation = () => {
 
   return useMutation(
     async (user: Partial<User>) => {
+      console.log('bejövő user', user)
       try {
         const url = new URL(`/users`, process.env.API_URL)
         const response = await fetch(url.toString(), {
@@ -80,16 +83,17 @@ export const useUserCreation = () => {
           },
           body: JSON.stringify(user),
         })
-
+        console.log('response', response)
         if (!response.ok) {
           throw new Error(response.statusText)
         }
       } catch (e) {
-        throw new Error('Failed to create todo', { cause: e as Error })
+        console.log('error', e)
+        throw new Error('Failed to create user', { cause: e as Error })
       }
     },
     {
-      onSuccess: () => queryClient.invalidateQueries(['todos']),
+      onSuccess: () => queryClient.invalidateQueries(['users']),
     }
   )
 }
