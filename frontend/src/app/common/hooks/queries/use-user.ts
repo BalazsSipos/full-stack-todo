@@ -85,11 +85,11 @@ export const useUserCreation = () => {
           throw new Error(response.statusText)
         }
       } catch (e) {
-        throw new Error('Failed to create todo', { cause: e as Error })
+        throw new Error('Failed to create user', { cause: e as Error })
       }
     },
     {
-      onSuccess: () => queryClient.invalidateQueries(['todos']),
+      onSuccess: () => queryClient.invalidateQueries(['users']),
     }
   )
 }
