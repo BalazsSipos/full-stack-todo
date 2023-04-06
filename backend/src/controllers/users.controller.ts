@@ -31,6 +31,7 @@ export class UsersController {
   // @UseAfter(validationMiddleware(CreateUserDto, 'body'))
   @OpenAPI({ summary: 'Create a new user' })
   async createUser(@Body() userData: CreateUserDto) {
+    console.log('userData', userData)
     const createdUser: UserRpDto = await this.userService.createUser(userData)
     return { data: createdUser, message: 'created' }
   }
