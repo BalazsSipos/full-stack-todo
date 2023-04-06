@@ -38,7 +38,9 @@ export class UserServiceImpl implements UserService {
   }
 
   public async findUserEntityByEmail(email: string): Promise<UserEntity> {
+    console.log('findUserEntityByEmail1', email)
     const userEntity: UserEntity = await this.userRepository.findByEmail(email)
+    console.log('userEntity', userEntity)
     if (!userEntity) throw new HttpException(409, "User doesn't exist")
 
     return userEntity
