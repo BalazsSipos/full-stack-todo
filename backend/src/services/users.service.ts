@@ -12,7 +12,6 @@ export class UserServiceImpl implements UserService {
   private userRepository = UserRepository
 
   public async findAllUser(): Promise<UserRpDto[]> {
-    console.log('findAllUser')
     const userEntities: UserEntity[] = await this.userRepository.find({
       relations: {
         createdTodos: true,
@@ -23,7 +22,6 @@ export class UserServiceImpl implements UserService {
         },
       },
     })
-    console.log('userEntities', userEntities)
     const userRpDtos: UserRpDto[] = userEntities.map((userEntity) => {
       const userRpDto: UserRpDto = mapper.map(userEntity, UserEntity, UserRpDto)
       userRpDto.numberOfTodos = userEntity.createdTodos.length
@@ -38,9 +36,7 @@ export class UserServiceImpl implements UserService {
   }
 
   public async findUserEntityByEmail(email: string): Promise<UserEntity> {
-    console.log('findUserEntityByEmail1', email)
     const userEntity: UserEntity = await this.userRepository.findByEmail(email)
-    console.log('userEntity', userEntity)
     if (!userEntity) throw new HttpException(409, "User doesn't exist")
 
     return userEntity
