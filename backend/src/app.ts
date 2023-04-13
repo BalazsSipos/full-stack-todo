@@ -76,9 +76,12 @@ class App {
     admin.initializeApp({
       credential: admin.credential.cert({
         privateKey:
-          process.env.FIREBASE_ADMIN_PRIVATE_KEY[0] === '-'
-            ? process.env.FIREBASE_ADMIN_PRIVATE_KEY
-            : JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY),
+          // process.env.FIREBASE_ADMIN_PRIVATE_KEY[0] === '-'
+          //   ? process.env.FIREBASE_ADMIN_PRIVATE_KEY
+          //   : JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY),
+          process.env.FIREBASE_ADMIN_PRIVATE_KEY
+            ? process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/gm, '\n')
+            : undefined,
         clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
         projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
       }),
