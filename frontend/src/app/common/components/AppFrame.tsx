@@ -10,7 +10,8 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import PeopleIcon from '@mui/icons-material/People'
 
 const AppMenu = () => {
-  const user = useContext(AuthContext)
+  const context = useContext(AuthContext)
+  const firebaseUser = context?.firebaseUser ?? null
 
   return (
     <GlassSurface
@@ -37,8 +38,8 @@ const AppMenu = () => {
             <Button component={Link} to="/" startIcon={<PeopleIcon />}>
               Users
             </Button>
-            {user ? (
-              <Button component={Link} to={`/${user.email}/todos`} startIcon={<TaskAlt />}>
+            {firebaseUser ? (
+              <Button component={Link} to={`/${firebaseUser?.email}/todos`} startIcon={<TaskAlt />}>
                 My Todos
               </Button>
             ) : (
@@ -46,7 +47,7 @@ const AppMenu = () => {
                 Login
               </Button>
             )}
-            {user && (
+            {firebaseUser && (
               <Button component={Link} to="/" onClick={() => auth.signOut()} startIcon={<LogoutIcon />}>
                 Logout
               </Button>

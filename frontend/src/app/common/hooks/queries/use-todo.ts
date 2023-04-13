@@ -1,21 +1,38 @@
+import { AuthContext } from '../../components/AuthContext'
 import { Todo } from '../../../todo/models/Todo'
+import { useContext } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useNavigate } from 'react-router-dom'
 
-export const useTodos = (userEmail: string) => {
+export const useTodos = (userEmail: string, token: string | undefined) => {
+  const navigate = useNavigate()
+  const context = useContext(AuthContext)
+  const firebaseUser = context?.firebaseUser ?? null
+
   return useQuery<Todo[], unknown>(
-    ['todos', 'list', userEmail],
+    ['todos', 'list', userEmail, token !== 'invalid'],
     async () => {
+      if (token === 'invalid' && firebaseUser) {
+        return []
+      }
       try {
         const url = new URL(`/users/${userEmail}/todos`, process.env.API_URL)
         const fetchResponse = await fetch(url.toString(), {
-          // headers: {
-          //   Authorization: `Bearer ${token}`,
-          // },
+          headers: {
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         })
 
         if (fetchResponse.ok) {
           return ((await fetchResponse.json()) as Todo[]) ?? []
         } else {
+          if (fetchResponse.status === 401) {
+            navigate('/login')
+          }
+          if (fetchResponse.status === 403) {
+            navigate('/')
+          }
           throw new Error(fetchResponse.statusText)
         }
       } catch (e) {

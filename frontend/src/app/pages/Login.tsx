@@ -12,7 +12,8 @@ interface GoogleUser {
 }
 
 export const Login = ({ auth }: { auth: firebase.auth.Auth }) => {
-  const userContext = useContext(AuthContext)
+  const context = useContext(AuthContext)
+  const firebaseUser = context?.firebaseUser ?? null
   const createUser = useUserCreation()
 
   const getUserFromInput = (userInput: GoogleUser) => {
@@ -39,24 +40,13 @@ export const Login = ({ auth }: { auth: firebase.auth.Auth }) => {
       signInSuccessUrl: '/',
       callbacks: {
         signInSuccessWithAuthResult(authResult: firebase.auth.UserCredential, redirectUrl) {
-          console.log('authResult', authResult)
-          // if (authResult.additionalUserInfo?.isNewUser) {
           const user = getUserFromInput(authResult.additionalUserInfo?.profile as GoogleUser)
-          console.log('userFromInput', user)
           createUser.mutate(user)
-          // }
-          // const googleUser: GoogleUser = authResult.additionalUserInfo?.profile as GoogleUser
-          console.log('success')
-          console.log(authResult)
-          console.log('additional', authResult.additionalUserInfo)
-          console.log(redirectUrl)
           return true
         },
       },
     })
   }, [auth, createUser])
 
-  console.log('userContext2', userContext)
-
-  return <>{!userContext && <div className="firebase-auth-container"></div>}</>
+  return <>{!firebaseUser && <div className="firebase-auth-container"></div>}</>
 }
