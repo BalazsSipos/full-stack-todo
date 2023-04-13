@@ -1,9 +1,11 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Patch, Post } from 'routing-controllers'
+import { Body, Delete, Get, HttpCode, JsonController, Param, Patch, Post, UseBefore } from 'routing-controllers'
 import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '../dtos/todos.dto'
 import { OpenAPI } from 'routing-controllers-openapi'
 import { TYPES } from '../config/types'
 import { TodoService } from '../interfaces/todos.interface'
+import { authorizeOwnUserRequest } from '../middlewares/authorization.middleware'
 import { inject, injectable } from 'inversify'
+import authenticateJWT from '../middlewares/authentication.middleware'
 
 @JsonController()
 @injectable()
@@ -12,6 +14,7 @@ export class TodosController {
   todoService: TodoService
 
   @Get('/users/:email/todos')
+  @UseBefore(authenticateJWT, authorizeOwnUserRequest)
   @OpenAPI({ summary: 'Return a list of todos of a user' })
   async getTodos(@Param('email') email: string) {
     const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email)

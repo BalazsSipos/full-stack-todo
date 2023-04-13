@@ -19,7 +19,6 @@ export const validationMiddleware = (
 ): RequestHandler => {
   return (req, res, next) => {
     const obj = plainToInstance(type, req[value])
-    console.log(obj)
     validate(obj, { skipMissingProperties, whitelist, forbidNonWhitelisted }).then((errors: ValidationError[]) => {
       if (errors.length > 0) {
         const message = errors.map(getAllNestedErrors).join(', ')

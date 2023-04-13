@@ -1,3 +1,4 @@
+import 'firebaseui/dist/firebaseui.css'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { AppFrame } from './common/components/AppFrame'
 import { AuthContext } from './common/components/AuthContext'
@@ -5,6 +6,7 @@ import { AuthProvider } from './common/components/AuthProvider'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { CircularProgress, CssBaseline, ThemeProvider } from '@mui/material'
 import { DateTime } from 'luxon'
+import { Loading } from './pages/Loading'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { Login } from './pages/Login'
 import { PageNotFound } from './PageNotFound'
@@ -18,18 +20,23 @@ import { queryClient } from './common/query/query-client'
 import { useTheme } from './common/theme/use-theme'
 
 const AppRouter = () => {
-  const user = useContext(AuthContext)
+  const context = useContext(AuthContext)
+  const firebaseUser = context?.firebaseUser ?? null
+  const isLoaded = context?.isLoaded
 
   return (
     <Suspense fallback={<CircularProgress />}>
       <Routes>
         <Route index element={<Users />} />
-        {user ? (
+        {firebaseUser ? (
           <>
             <Route path=":email/todos" element={<Todos />} />
           </>
         ) : (
-          <Route path="login" element={<Login auth={auth} />} />
+          <>
+            {!firebaseUser && isLoaded && <Route path="*" element={<Login auth={auth} />} />}
+            {!firebaseUser && !isLoaded && <Route path="*" element={<Loading />} />}
+          </>
         )}
         <Route path="*" element={<PageNotFound />} />
       </Routes>

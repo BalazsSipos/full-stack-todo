@@ -58,10 +58,8 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
       performedByEmail: (data.get('performedBy') as string) ?? '',
     }
     if (todo) {
-      console.log('update', newTodo)
       updateTodo.mutate(newTodo, { onSuccess })
     } else {
-      console.log('create', newTodo)
       createTodo.mutate(newTodo, { onSuccess })
     }
   }

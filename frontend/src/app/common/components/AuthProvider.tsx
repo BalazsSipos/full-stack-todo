@@ -1,23 +1,27 @@
 import { AuthContext } from './AuthContext'
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { User } from '../../user/models/User'
 import { auth } from '../config/firebaseSetup'
-import { convertFirebaseUserToUser } from '../hooks/queries/use-user'
+import firebase from 'firebase/compat'
+
+export interface Context {
+  firebaseUser: firebase.User | null
+  isLoaded: boolean
+}
 
 export const AuthProvider = (props: PropsWithChildren<unknown>) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [context, setContext] = useState<Context | null>(null)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser) {
-        setUser(convertFirebaseUserToUser(firebaseUser))
-      } else {
-        setUser(null)
+      const contextObject = {
+        firebaseUser: firebaseUser,
+        isLoaded: true,
       }
+      setContext(contextObject)
     })
 
     return unsubscribe
   }, [])
 
-  return <AuthContext.Provider value={user}>{props.children}</AuthContext.Provider>
+  return <AuthContext.Provider value={context}>{props.children}</AuthContext.Provider>
 }

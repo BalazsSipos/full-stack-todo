@@ -1,11 +1,12 @@
+import * as admin from 'firebase-admin'
 import { AppDataSource } from './data-source'
 import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from './config'
 import { myContainer } from './config/inversify.config'
+import { readdirSync } from 'fs'
 import { useContainer, useExpressServer } from 'routing-controllers'
 import errorMiddleware from './middlewares/error.middleware'
 import express from 'express'
 import fs from 'fs'
-import { readdirSync } from 'fs'
 import path from 'path'
 
 class App {
@@ -23,6 +24,7 @@ class App {
     this.initializeRoutes(Controllers)
     this.initializeErrorHandling()
     this.initializeDataStore()
+    this.initializeFirebaseAuthentication()
   }
 
   public listen() {
@@ -66,6 +68,21 @@ class App {
       },
       controllers: controllers,
       defaultErrorHandler: false,
+    })
+  }
+
+  // helper blog post: https://www.tonyvu.co/posts/jwt-authentication-node-js
+  private initializeFirebaseAuthentication() {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        privateKey:
+          process.env.FIREBASE_ADMIN_PRIVATE_KEY[0] === '-'
+            ? process.env.FIREBASE_ADMIN_PRIVATE_KEY
+            : JSON.parse(process.env.FIREBASE_ADMIN_PRIVATE_KEY),
+        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+      }),
+      // databaseURL: process.env.FIREBASE_DATABASE_URL,
     })
   }
 
