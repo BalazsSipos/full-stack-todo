@@ -4,19 +4,19 @@ import { useContext } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 
-export const useTodos = (userEmail: string, token: string | undefined) => {
+export const useTodos = (requestedEmail: string, token: string | undefined) => {
   const navigate = useNavigate()
   const context = useContext(AuthContext)
   const firebaseUser = context?.firebaseUser ?? null
 
   return useQuery<Todo[], unknown>(
-    ['todos', 'list', userEmail, token !== 'invalid'],
+    ['todos', 'list', requestedEmail, firebaseUser?.email, token !== 'invalid'],
     async () => {
       if (token === 'invalid' && firebaseUser) {
         return []
       }
       try {
-        const url = new URL(`/users/${userEmail}/todos`, process.env.API_URL)
+        const url = new URL(`/users/${requestedEmail}/todos`, process.env.API_URL)
         const fetchResponse = await fetch(url.toString(), {
           headers: {
             authorization: `Bearer ${token}`,
@@ -36,7 +36,7 @@ export const useTodos = (userEmail: string, token: string | undefined) => {
           throw new Error(fetchResponse.statusText)
         }
       } catch (e) {
-        throw new Error(`Failed get todos of user ${userEmail}`, { cause: e as Error })
+        throw new Error(`Failed get todos of user ${requestedEmail}`, { cause: e as Error })
       }
     },
     {
