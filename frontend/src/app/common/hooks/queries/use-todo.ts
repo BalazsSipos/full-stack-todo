@@ -16,7 +16,7 @@ export const useTodos = (requestedEmail: string, token: string | undefined) => {
         return []
       }
       try {
-        const url = new URL(`/users/${requestedEmail}/todos`, process.env.API_URL)
+        const url = new URL(`/todos?user=${requestedEmail}`, process.env.API_URL)
         const fetchResponse = await fetch(url.toString(), {
           headers: {
             authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ export const useTodoCreation = (email: string) => {
   return useMutation(
     async (todo: Partial<Todo>) => {
       try {
-        const url = new URL(`/users/${email}/todos`, process.env.API_URL)
+        const url = new URL(`/todos?user=${email}`, process.env.API_URL)
 
         const response = await fetch(url.toString(), {
           method: 'POST',
@@ -84,7 +84,7 @@ export const useTodoPatch = (email: string, todoId: number) => {
   return useMutation(
     async (todo: Partial<Todo>) => {
       try {
-        const url = new URL(`/users/${email}/todos/${todoId}`, process.env.API_URL)
+        const url = new URL(`/todos/${todoId}?user=${email}`, process.env.API_URL)
         const response = await fetch(url.toString(), {
           method: 'PATCH',
           headers: {
@@ -114,7 +114,7 @@ export const useTodoDelete = (email: string, todoId: number) => {
   return useMutation(
     async () => {
       try {
-        const url = new URL(`/users/${email}/todos/${todoId}`, process.env.API_URL)
+        const url = new URL(`/todos/${todoId}?user=${email}`, process.env.API_URL)
 
         const response = await fetch(url.toString(), {
           method: 'DELETE',

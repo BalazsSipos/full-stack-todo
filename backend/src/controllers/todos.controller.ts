@@ -1,59 +1,68 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Patch, Post, UseBefore } from 'routing-controllers'
-import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '../dtos/todos.dto'
-import { OpenAPI } from 'routing-controllers-openapi'
-import { TYPES } from '../config/types'
-import { TodoService } from '../interfaces/todos.interface'
-import { authorizeOwnUserRequest } from '../middlewares/authorization.middleware'
-import { inject, injectable } from 'inversify'
-import authenticateJWT from '../middlewares/authentication.middleware'
+import * as express from 'express';
+import { TYPES } from '../config/types';
+import { TodoRpDto } from '../dtos/todos.dto';
+import { TodoService } from '../interfaces/todos.interface';
+import {
+  controller,
+  httpDelete,
+  httpGet,
+  httpPatch,
+  httpPost,
+  queryParam,
+  request,
+  requestParam,
+  response,
+} from 'inversify-express-utils';
+import { inject } from 'inversify';
 
-@JsonController()
-@injectable()
+@controller('/todos')
 export class TodosController {
-  @inject(TYPES.TodoService)
-  todoService: TodoService
+  // @inject(TYPES.TodoService)
+  // todoService: TodoService;
+  constructor(@inject(TYPES.TodoService) private todoService: TodoService) {}
 
-  @Get('/users/:email/todos')
-  @UseBefore(authenticateJWT, authorizeOwnUserRequest)
-  @OpenAPI({ summary: 'Return a list of todos of a user' })
-  async getTodos(@Param('email') email: string) {
-    const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email)
-    return findAllTodosData
+  @httpGet('/')
+  // @UseBefore(authenticateJWT, authorizeOwnUserRequest)
+  async getTodos(@queryParam('email') email: string, @request() req: express.Request) {
+    console.log('email', email);
+    console.log('req', req.url);
+    const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email);
+    return findAllTodosData;
   }
 
-  @Get('/users/:email/todos/:tid')
-  @OpenAPI({ summary: 'Return find a todo' })
-  async getTodoById(@Param('email') email: string, @Param('tid') todoId: string) {
-    const findOneTodoData: TodoRpDto = await this.todoService.findTodoByUserEmailAndTodoId(email, todoId)
-    return { data: findOneTodoData, message: 'findOne' }
+  @httpGet('/:tid')
+  async getTodoById(@queryParam('email') email: string, @requestParam('tid') todoId: string) {
+    const findOneTodoData: TodoRpDto = await this.todoService.findTodoByUserEmailAndTodoId(email, todoId);
+    return { data: findOneTodoData, message: 'findOne' };
   }
 
-  @Post('/users/:email/todos')
-  @HttpCode(201)
+  @httpPost('/')
   // @UseBefore(validationMiddleware(CreateTodoDto, 'body'))
   // @UseAfter(validationMiddleware(CreateTodoDto, 'body'))
-  @OpenAPI({ summary: 'Create a new todo' })
-  async createTodo(@Param('email') email: string, @Body() todoData: CreateTodoDto) {
-    const createdTodo: TodoRpDto = await this.todoService.createTodo(email, todoData)
-    return { data: createdTodo, message: 'created' }
-  }
-
-  @Patch('/users/:email/todos/:tid')
-  // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
-  @OpenAPI({ summary: 'Update a todo' })
-  async updateUser(
-    @Param('email') email: string,
-    @Param('tid') todoId: string,
-    @Body() todoData: UpdateTodoDto | CompleteTodoDto
+  async createTodo(
+    @queryParam('email') email: string,
+    @request() req: express.Request,
+    @response() res: express.Response
   ) {
-    const updatedTodo: TodoRpDto = await this.todoService.updateTodo(email, todoId, todoData)
-    return { data: updatedTodo, message: 'updated' }
+    const createdTodo: TodoRpDto = await this.todoService.createTodo(email, req.body);
+    res.status(201).json({ data: createdTodo, message: 'created' });
   }
 
-  @Delete('/users/:email/todos/:tid')
-  @OpenAPI({ summary: 'Delete a todo' })
-  async deleteTodo(@Param('email') email: string, @Param('tid') todoId: string) {
-    const deletedTodo: TodoRpDto = await this.todoService.deleteTodo(email, todoId)
-    return { data: deletedTodo, message: 'deleted' }
+  @httpPatch('/:tid')
+  // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
+  async updateUser(
+    @queryParam('email') email: string,
+    @requestParam('tid') todoId: string,
+    @request() req: express.Request,
+    @response() res: express.Response
+  ) {
+    const updatedTodo: TodoRpDto = await this.todoService.updateTodo(email, todoId, req.body);
+    res.status(200).json({ data: updatedTodo, message: 'updated' });
+  }
+
+  @httpDelete('/:tid')
+  async deleteTodo(@queryParam('email') email: string, @requestParam('tid') todoId: string) {
+    const deletedTodo: TodoRpDto = await this.todoService.deleteTodo(email, todoId);
+    return { data: deletedTodo, message: 'deleted' };
   }
 }

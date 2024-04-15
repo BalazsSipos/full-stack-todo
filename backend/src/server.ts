@@ -1,6 +1,7 @@
-import 'reflect-metadata'
-import { Controllers } from './config/inversify.config'
-import App from './app'
+import 'reflect-metadata';
+import { InversifyExpressServer } from 'inversify-express-utils';
+import { app } from './app';
+import { myContainer } from './config/inversify.config';
 
-const app = new App(Controllers)
-app.listen()
+const server = new InversifyExpressServer(myContainer, null, null, app);
+server.build().listen(3000);

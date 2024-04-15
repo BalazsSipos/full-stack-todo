@@ -1,11 +1,9 @@
-import 'reflect-metadata'
-import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from './config'
-import { DataSource } from 'typeorm'
-import { TodoEntity } from './entity/todos.entity'
-import { UserEntity } from './entity/users.entity'
-// import path from 'path'
+import 'reflect-metadata';
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from './config';
+import { DataSource } from 'typeorm';
+import { TodoEntity } from './entity/todos.entity';
+import { UserEntity } from './entity/users.entity';
 
-// export const AppDataSource = new DataSource({
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: DB_HOST,
@@ -21,5 +19,5 @@ export const AppDataSource = new DataSource({
   // entities: ['./**/*.entity.{js,ts}'],
   subscribers: [],
   migrations: [],
-  ssl: true,
-})
+  ssl: false,
+});
