@@ -1,37 +1,37 @@
-import { Body, Get, HttpCode, JsonController, Param, Post } from 'routing-controllers'
-import { CreateUserDto, UserRpDto } from '../dtos/users.dto'
-import { OpenAPI } from 'routing-controllers-openapi'
-import { TYPES } from '../config/types'
-import { UserService } from '../interfaces/users.interface'
-import { inject, injectable } from 'inversify'
+import { Request, Response } from 'express';
+import { TYPES } from '../config/types';
+import { UserController, UserService } from '../interfaces/users.interface';
+import { UserRpDto } from '../dtos/users.dto';
+import { inject, injectable } from 'inversify';
 
-@JsonController()
 @injectable()
-export class UsersController {
-  @inject(TYPES.UserService)
-  userService: UserService
+export class UserControllerImpl implements UserController {
+  // @inject(TYPES.UserService)
+  // userService: UserService;
+  constructor(@inject(TYPES.UserService) private userService: UserService) {}
 
-  @Get('/users')
-  @OpenAPI({ summary: 'Return a list of users' })
-  async getUsers() {
-    const findAllUsersData: UserRpDto[] = await this.userService.findAllUser()
-    return findAllUsersData
-  }
+  public getUsers = async (req: Request, res: Response): Promise<Response<UserRpDto[]>> => {
+    const users = await this.userService.findAllUser();
+    const data = res.status(200).json(users);
+    return data;
+  };
 
-  @Get('/users/:email')
-  @OpenAPI({ summary: 'Return find a user' })
-  async getUserById(@Param('email') email: string) {
-    const findOneUserData: UserRpDto = await this.userService.findUserByEmail(email)
-    return { data: findOneUserData, message: 'findOne' }
-  }
+  public getUserByEmail = async (req: Request) => {
+    const email = req.params.email;
+    // const findOneUserData: UserRpDto = await this.userService.findUserByEmail(email);
+    return await this.userService.findUserByEmail(email);
+    // return { data: findOneUserData, message: 'findOne' };
+  };
 
-  @Post('/users')
-  @HttpCode(201)
+  // @HttpCode(201)
   // @UseBefore(validationMiddleware(CreateUserDto, 'body'))
   // @UseAfter(validationMiddleware(CreateUserDto, 'body'))
-  @OpenAPI({ summary: 'Create a new user' })
-  async createUser(@Body() userData: CreateUserDto) {
-    const createdUser: UserRpDto = await this.userService.createUser(userData)
-    return { data: createdUser, message: 'created' }
-  }
+  public createUser = async (req: Request, res: Response) => {
+    try {
+      await this.userService.createUser(req.body);
+      res.sendStatus(201);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  };
 }

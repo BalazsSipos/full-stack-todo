@@ -1,17 +1,14 @@
-import { Container } from 'inversify'
-import { TYPES } from './types'
-import { TodoService } from '../interfaces/todos.interface'
-import { TodoServiceImpl } from '../services/todos.service'
-import { TodosController } from '../controllers/todos.controller'
-import { UserService } from '../interfaces/users.interface'
-import { UserServiceImpl } from '../services/users.service'
-import { UsersController } from '../controllers/users.controller'
+import { Container } from 'inversify';
+import { TYPES } from './types';
+import { TodoController, TodoService } from '../interfaces/todos.interface';
+import { TodoControllerImpl } from '../controllers/todos.controller';
+import { TodoServiceImpl } from '../services/todos.service';
+import { UserController, UserService } from '../interfaces/users.interface';
+import { UserControllerImpl } from '../controllers/users.controller';
+import { UserServiceImpl } from '../services/users.service';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const Controllers: Function[] = [UsersController, TodosController]
-
-export const myContainer = new Container()
-myContainer.bind<UserService>(TYPES.UserService).to(UserServiceImpl)
-myContainer.bind<TodoService>(TYPES.TodoService).to(TodoServiceImpl)
-myContainer.bind<UsersController>(UsersController).toSelf().inSingletonScope()
-myContainer.bind<TodosController>(TodosController).toSelf().inSingletonScope()
+export const myContainer = new Container();
+myContainer.bind<UserService>(TYPES.UserService).to(UserServiceImpl);
+myContainer.bind<TodoService>(TYPES.TodoService).to(TodoServiceImpl);
+myContainer.bind<UserController>(TYPES.UserController).to(UserControllerImpl);
+myContainer.bind<TodoController>(TYPES.TodoController).to(TodoControllerImpl);

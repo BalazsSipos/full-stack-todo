@@ -1,6 +1,12 @@
-import 'reflect-metadata'
-import { Controllers } from './config/inversify.config'
-import App from './app'
+import 'reflect-metadata';
+import { app } from './app';
+import http from 'http';
 
-const app = new App(Controllers)
-app.listen()
+const port = process.env.PORT || 3000;
+
+const server = http.createServer(app);
+
+server.listen(port);
+
+// const server = new InversifyExpressServer(myContainer, null, null, app);
+// server.build().listen(3000);

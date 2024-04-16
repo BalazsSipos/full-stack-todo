@@ -1,59 +1,60 @@
-import { Body, Delete, Get, HttpCode, JsonController, Param, Patch, Post, UseBefore } from 'routing-controllers'
-import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '../dtos/todos.dto'
-import { OpenAPI } from 'routing-controllers-openapi'
-import { TYPES } from '../config/types'
-import { TodoService } from '../interfaces/todos.interface'
-import { authorizeOwnUserRequest } from '../middlewares/authorization.middleware'
-import { inject, injectable } from 'inversify'
-import authenticateJWT from '../middlewares/authentication.middleware'
+import { Request, Response } from 'express';
+import { TYPES } from '../config/types';
+import { TodoController, TodoService } from '../interfaces/todos.interface';
+import { TodoRpDto } from '../dtos/todos.dto';
 
-@JsonController()
+import { inject, injectable } from 'inversify';
+
 @injectable()
-export class TodosController {
-  @inject(TYPES.TodoService)
-  todoService: TodoService
+export class TodoControllerImpl implements TodoController {
+  // @inject(TYPES.TodoService)
+  // todoService: TodoService;
+  constructor(@inject(TYPES.TodoService) private todoService: TodoService) {}
 
-  @Get('/users/:email/todos')
-  @UseBefore(authenticateJWT, authorizeOwnUserRequest)
-  @OpenAPI({ summary: 'Return a list of todos of a user' })
-  async getTodos(@Param('email') email: string) {
-    const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email)
-    return findAllTodosData
-  }
+  // @UseBefore(authenticateJWT, authorizeOwnUserRequest)
+  getTodos = async (req: Request, res: Response): Promise<Response<TodoRpDto[]>> => {
+    const email = res.locals.email;
+    if (!email) {
+      throw new Error('email is required');
+      // return res.status(400).json({ error: 'email is required' });
+    }
+    const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email);
+    const data = res.status(200).json(findAllTodosData);
+    return data;
+  };
 
-  @Get('/users/:email/todos/:tid')
-  @OpenAPI({ summary: 'Return find a todo' })
-  async getTodoById(@Param('email') email: string, @Param('tid') todoId: string) {
-    const findOneTodoData: TodoRpDto = await this.todoService.findTodoByUserEmailAndTodoId(email, todoId)
-    return { data: findOneTodoData, message: 'findOne' }
-  }
+  getTodoById = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {
+    const email = res.locals.email as string;
+    if (!email) {
+      return res.status(400).json({ error: 'email is required' });
+    }
+    const todoId = req.params.tid;
+    const findOneTodoData: TodoRpDto = await this.todoService.findTodoByUserEmailAndTodoId(email, todoId);
+    const data = res.status(200).json(findOneTodoData);
+    return data;
+  };
 
-  @Post('/users/:email/todos')
-  @HttpCode(201)
   // @UseBefore(validationMiddleware(CreateTodoDto, 'body'))
   // @UseAfter(validationMiddleware(CreateTodoDto, 'body'))
-  @OpenAPI({ summary: 'Create a new todo' })
-  async createTodo(@Param('email') email: string, @Body() todoData: CreateTodoDto) {
-    const createdTodo: TodoRpDto = await this.todoService.createTodo(email, todoData)
-    return { data: createdTodo, message: 'created' }
-  }
+  createTodo = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {
+    const email = res.locals.email;
+    const createdTodo: TodoRpDto = await this.todoService.createTodo(email, req.body);
+    return res.status(201).json(createdTodo);
+  };
 
-  @Patch('/users/:email/todos/:tid')
   // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
-  @OpenAPI({ summary: 'Update a todo' })
-  async updateUser(
-    @Param('email') email: string,
-    @Param('tid') todoId: string,
-    @Body() todoData: UpdateTodoDto | CompleteTodoDto
-  ) {
-    const updatedTodo: TodoRpDto = await this.todoService.updateTodo(email, todoId, todoData)
-    return { data: updatedTodo, message: 'updated' }
-  }
+  updateTodo = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {
+    const email = res.locals.email;
+    const todoId = req.params.tid;
+    const updatedTodo: TodoRpDto = await this.todoService.updateTodo(email, todoId, req.body);
+    return res.status(200).json({ data: updatedTodo, message: 'updated' });
+  };
 
-  @Delete('/users/:email/todos/:tid')
-  @OpenAPI({ summary: 'Delete a todo' })
-  async deleteTodo(@Param('email') email: string, @Param('tid') todoId: string) {
-    const deletedTodo: TodoRpDto = await this.todoService.deleteTodo(email, todoId)
-    return { data: deletedTodo, message: 'deleted' }
-  }
+  deleteTodo = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {
+    const email = res.locals.email;
+    const todoId = req.params.tid;
+
+    const deletedTodo: TodoRpDto = await this.todoService.deleteTodo(email, todoId);
+    return res.status(200).json(deletedTodo);
+  };
 }
