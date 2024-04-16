@@ -1,4 +1,6 @@
 export const TYPES = {
-    UserService: Symbol.for("UserService"),
-    TodoService: Symbol.for("TodoService")
+  UserController: Symbol.for('UserController'),
+  TodoController: Symbol.for('TodoController'),
+  UserService: Symbol.for('UserService'),
+  TodoService: Symbol.for('TodoService'),
 };

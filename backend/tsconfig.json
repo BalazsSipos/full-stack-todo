@@ -21,18 +21,6 @@
     "importHelpers": true,
     "baseUrl": "src",
     "types": ["reflect-metadata"]
-    // "paths": {
-    //   "@/*": ["*"],
-    //   "@config": ["config"],
-    //   "@controllers/*": ["controllers/*"],
-    //   "@dtos/*": ["dtos/*"],
-    //   "@exceptions/*": ["exceptions/*"],
-    //   "@interfaces/*": ["interfaces/*"],
-    //   "@middlewares/*": ["middlewares/*"],
-    //   "@models/*": ["models/*"],
-    //   "@services/*": ["services/*"],
-    //   "@utils/*": ["utils/*"]
-    // }
   },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],
   "exclude": ["node_modules", "src/http", "src/logs", "src/tests"]

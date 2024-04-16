@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin';
 import { AppDataSource } from './data-source';
-// import { useContainer, useExpressServer } from 'routing-controllers'
 import errorMiddleware from './middlewares/error.middleware';
 import express from 'express';
 
@@ -8,6 +7,7 @@ import * as bodyParser from 'body-parser';
 
 import './controllers/todos.controller';
 import './controllers/users.controller';
+import { userRoutes } from './routes/users.routes';
 
 export const app = express();
 initializeDataStore();
@@ -25,6 +25,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use('/users', userRoutes);
 
 app.use(errorMiddleware);
 

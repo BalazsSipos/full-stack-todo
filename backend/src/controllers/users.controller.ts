@@ -1,26 +1,28 @@
 import * as express from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { TYPES } from '../config/types';
+import { UserController, UserService } from '../interfaces/users.interface';
 import { UserRpDto } from '../dtos/users.dto';
-import { UserService } from '../interfaces/users.interface';
 import { controller, httpGet, httpPost, request, requestParam, response } from 'inversify-express-utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 
-@controller('/users')
-export class UsersController {
+@injectable()
+export class UserControllerImpl implements UserController {
   // @inject(TYPES.UserService)
   // userService: UserService;
   constructor(@inject(TYPES.UserService) private userService: UserService) {}
 
-  @httpGet('/')
-  async getUsers() {
-    console.log('getUsers');
-    return await this.userService.findAllUser();
-  }
+  public getUsers = async (req: Request, res: Response): Promise<Response<UserRpDto[]>> => {
+    const users = await this.userService.findAllUser();
+    const data = res.status(200).json(users);
+    return data;
+  };
 
   @httpGet('/:email')
-  async getUserById(@requestParam('email') email: string) {
-    const findOneUserData: UserRpDto = await this.userService.findUserByEmail(email);
-    return { data: findOneUserData, message: 'findOne' };
+  async getUserById(email: string) {
+    // const findOneUserData: UserRpDto = await this.userService.findUserByEmail(email);
+    return await this.userService.findUserByEmail(email);
+    // return { data: findOneUserData, message: 'findOne' };
   }
 
   @httpPost('/')
