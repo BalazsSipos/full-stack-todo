@@ -11,7 +11,7 @@ import { userRoutes } from './routes/users.routes';
 
 export const app = express();
 initializeDataStore();
-initializeFirebaseAuthentication;
+initializeFirebaseAuthentication();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

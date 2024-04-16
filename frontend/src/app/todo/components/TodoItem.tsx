@@ -1,3 +1,4 @@
+import { AuthContext } from '../../common/components/AuthContext';
 import {
   Box,
   Card,
@@ -16,54 +17,67 @@ import {
   Stack,
   Tooltip,
   Typography,
-} from '@mui/material'
-import { DateTime } from 'luxon'
-import { GlassSurface } from '../../common/components/GlassSurface'
-import { MoreHoriz, SvgIconComponent } from '@mui/icons-material'
-import { Todo } from '../models/Todo'
-import { TodoForm } from './TodoForm'
-import { useParams } from 'react-router-dom'
-import { useState } from 'react'
-import { useTodoDelete, useTodoPatch } from '../../common/hooks/queries/use-todo'
-import BlockIcon from '@mui/icons-material/Block'
-import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import EditIcon from '@mui/icons-material/Edit'
-import ForwardTwoToneIcon from '@mui/icons-material/ForwardTwoTone'
-import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone'
-import LunchDiningTwoToneIcon from '@mui/icons-material/LunchDiningTwoTone'
-import SportsRugbyTwoToneIcon from '@mui/icons-material/SportsRugbyTwoTone'
+} from '@mui/material';
+import { DateTime } from 'luxon';
+import { GlassSurface } from '../../common/components/GlassSurface';
+import { MoreHoriz, SvgIconComponent } from '@mui/icons-material';
+import { Todo } from '../models/Todo';
+import { TodoForm } from './TodoForm';
+import { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useTodoDelete, useTodoPatch } from '../../common/hooks/queries/use-todo';
+import BlockIcon from '@mui/icons-material/Block';
+import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EditIcon from '@mui/icons-material/Edit';
+import ForwardTwoToneIcon from '@mui/icons-material/ForwardTwoTone';
+import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
+import LunchDiningTwoToneIcon from '@mui/icons-material/LunchDiningTwoTone';
+import SportsRugbyTwoToneIcon from '@mui/icons-material/SportsRugbyTwoTone';
 
 type CategoryInfo = {
-  icon: SvgIconComponent
-  backgroundColor: string
-}
+  icon: SvgIconComponent;
+  backgroundColor: string;
+};
 
 export const TodoItem = ({ todo }: { todo: Todo }) => {
-  const { email } = useParams()
-  const todoCategories: Map<string, CategoryInfo> = new Map()
-  todoCategories.set('sport', { icon: SportsRugbyTwoToneIcon, backgroundColor: 'info.main' })
-  todoCategories.set('food', { icon: LunchDiningTwoToneIcon, backgroundColor: 'secondary' })
+  const context = useContext(AuthContext);
+  const firebaseUser = context?.firebaseUser;
 
-  const [editMode, setEditMode] = useState(false)
-  const patchTodo = useTodoPatch(email ?? '', Number(todo.id))
-  const deleteTodo = useTodoDelete(email ?? '', Number(todo.id))
+  const { email } = useParams();
+  const [token, setToken] = useState('invalid');
+
+  useEffect(() => {
+    if (firebaseUser) {
+      firebaseUser.getIdToken().then((idToken) => {
+        setToken(idToken);
+      });
+    }
+  }, [firebaseUser]);
+
+  const todoCategories: Map<string, CategoryInfo> = new Map();
+  todoCategories.set('sport', { icon: SportsRugbyTwoToneIcon, backgroundColor: 'info.main' });
+  todoCategories.set('food', { icon: LunchDiningTwoToneIcon, backgroundColor: 'secondary' });
+
+  const [editMode, setEditMode] = useState(false);
+  const patchTodo = useTodoPatch(email ?? '', token, Number(todo.id));
+  const deleteTodo = useTodoDelete(email ?? '', token, Number(todo.id));
 
   const completed = () => {
-    patchTodo.mutate({ completed: true })
-  }
+    patchTodo.mutate({ completed: true });
+  };
 
   const deleted = () => {
-    deleteTodo.mutate()
-  }
+    deleteTodo.mutate();
+  };
 
   const getIcon = (category: string) => {
-    const Icon = todoCategories.get(category)?.icon
-    return Icon ? <Icon /> : <MoreHoriz />
-  }
+    const Icon = todoCategories.get(category)?.icon;
+    return Icon ? <Icon /> : <MoreHoriz />;
+  };
 
   if (editMode) {
-    return <TodoForm todo={todo} onFinish={() => setEditMode(false)} />
+    return <TodoForm todo={todo} onFinish={() => setEditMode(false)} />;
   }
 
   const CircularProgressWithLabel = (props: CircularProgressProps & { value: number }) => {
@@ -87,8 +101,8 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           )}%`}</Typography>
         </Box>
       </Box>
-    )
-  }
+    );
+  };
 
   const TodoCardHeader = ({ bgColor }: { bgColor: string }) => {
     return (
@@ -109,8 +123,8 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           </Stack>
         }
       />
-    )
-  }
+    );
+  };
 
   const TodoCardContent = () => {
     return (
@@ -155,8 +169,8 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           </Typography>
         )}
       </CardContent>
-    )
-  }
+    );
+  };
 
   const TodoCardActions = ({ bgColor }: { bgColor: string }) => {
     return (
@@ -188,8 +202,8 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           </Grid>
         </>
       </CardActions>
-    )
-  }
+    );
+  };
 
   return (
     <GlassSurface component={Card}>
@@ -197,5 +211,5 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
       <TodoCardContent />
       <TodoCardActions bgColor="important.main" />
     </GlassSurface>
-  )
-}
+  );
+};
