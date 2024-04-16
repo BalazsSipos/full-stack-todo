@@ -7,6 +7,7 @@ import * as bodyParser from 'body-parser';
 
 import './controllers/todos.controller';
 import './controllers/users.controller';
+import { todoRoutes } from './routes/todos.routes';
 import { userRoutes } from './routes/users.routes';
 
 export const app = express();
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', userRoutes);
+app.use('/todos', todoRoutes);
 
 app.use(errorMiddleware);
 

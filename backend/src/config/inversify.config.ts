@@ -1,14 +1,14 @@
 import { Container } from 'inversify';
 import { TYPES } from './types';
-import { TodoService } from '../interfaces/todos.interface';
+import { TodoController, TodoService } from '../interfaces/todos.interface';
+import { TodoControllerImpl } from '../controllers/todos.controller';
 import { TodoServiceImpl } from '../services/todos.service';
-import { TodosController } from '../controllers/todos.controller';
+import { UserController, UserService } from '../interfaces/users.interface';
 import { UserControllerImpl } from '../controllers/users.controller';
-import { UserService, UserController } from '../interfaces/users.interface';
 import { UserServiceImpl } from '../services/users.service';
 
 export const myContainer = new Container();
 myContainer.bind<UserService>(TYPES.UserService).to(UserServiceImpl);
 myContainer.bind<TodoService>(TYPES.TodoService).to(TodoServiceImpl);
 myContainer.bind<UserController>(TYPES.UserController).to(UserControllerImpl);
-myContainer.bind<TodosController>(TodosController).toSelf().inSingletonScope();
+myContainer.bind<TodoController>(TYPES.TodoController).to(TodoControllerImpl);

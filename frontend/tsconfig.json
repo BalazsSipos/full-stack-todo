@@ -10,7 +10,7 @@
     "types": ["node"] /* Specify type package names to be included without being referenced in a source file. */,
     "resolveJsonModule": true /* Enable importing .json files. */,
     "sourceMap": true /* Create source map files for emitted JavaScript files. */,
-    "outDir": "./dist/" /* Specify an output folder for all emitted files. */,
+    "outDir": "dist" /* Specify an output folder for all emitted files. */,
     "importHelpers": true /* Allow importing helper functions from tslib once per project, instead of including them per-file. */,
     "isolatedModules": true /* Ensure that each file can be safely transpiled without relying on other imports. */,
     "allowSyntheticDefaultImports": true /* Allow 'import x from y' when a module doesn't have a default export. */,
@@ -19,10 +19,9 @@
     "strict": true /* Enable all strict type-checking options. */,
     "noUnusedLocals": true /* Enable error reporting when local variables aren't read. */,
     "noImplicitReturns": false /* Enable error reporting for codepaths that do not explicitly return in a function. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "suppressImplicitAnyIndexErrors": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": ["src", "api"],
   "exclude": ["node_modules", "dist", "build", "scripts", "packages"]

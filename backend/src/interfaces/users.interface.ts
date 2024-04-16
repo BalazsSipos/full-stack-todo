@@ -17,6 +17,6 @@ export interface UserService {
 
 export interface UserController {
   getUsers(req: Request, res: Response, next: NextFunction): Promise<Response<UserRpDto[]>>;
-  getUserById(email: string): Promise<UserRpDto>;
+  getUserByEmail(req: Request): Promise<UserRpDto>;
   createUser(req: any, res: any): Promise<void>;
 }
