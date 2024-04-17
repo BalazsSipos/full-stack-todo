@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/server.ts",
-    "start:prod": "NODE_ENV=production npx tsc && node -r dotenv/config ./dist/server.js dotenv_config_path=./src/.env.production",
+    "start:prod": "npx tsc && node -r dotenv/config ./dist/server.js dotenv_config_path=./src/.env.production",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "eslint": "eslint .",
@@ -54,8 +54,5 @@
     "@/controllers": "dist/controllers",
     "@my_module": "lib/some-file.js",
     "something": "src/foo"
-  },
-  "overrides": {
-    "rimraf": "^5.0.5"
   }
 }
