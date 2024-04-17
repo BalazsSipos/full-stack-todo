@@ -1,6 +1,7 @@
-import { config } from 'dotenv'
-config({ path: __dirname + `/../.env.${process.env.NODE_ENV || 'development'}` })
-export const CREDENTIALS = process.env.CREDENTIALS === 'true'
+import { config } from 'dotenv';
+config({ path: __dirname + `/../.env.${process.env.NODE_ENV || 'development'}` });
+export const CREDENTIALS = process.env.CREDENTIALS === 'true';
+export const SSL = process.env.SSL === 'true';
 export const {
   NODE_ENV,
   PORT,
@@ -13,4 +14,4 @@ export const {
   DB_USER,
   DB_PASSWORD,
   DB_NAME,
-} = process.env
+} = process.env;

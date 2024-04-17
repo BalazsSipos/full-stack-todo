@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from './config';
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER, SSL } from './config';
 import { DataSource } from 'typeorm';
 import { TodoEntity } from './entity/todos.entity';
 import { UserEntity } from './entity/users.entity';
@@ -19,5 +19,5 @@ export const AppDataSource = new DataSource({
   // entities: ['./**/*.entity.{js,ts}'],
   subscribers: [],
   migrations: [],
-  ssl: false,
+  ssl: SSL,
 });
