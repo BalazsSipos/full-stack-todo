@@ -10,7 +10,7 @@ const authenticateJWT = async (req: Request, res: Response, next: NextFunction) 
       .auth()
       .verifyIdToken(idToken)
       .then(function (decodedIdToken) {
-        res.locals.email = decodedIdToken.email;
+        req.email = decodedIdToken.email;
         return next();
       })
       .catch(function (error) {

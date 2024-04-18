@@ -9,7 +9,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "eslint": "eslint .",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@automapper/classes": "^8.8.1",
