@@ -4,7 +4,7 @@ import { createTodoRpDto } from '../entityFactory';
 import { injectable } from 'inversify';
 
 @injectable()
-export class TodoServiceTest implements TodoService {
+export class TodoServiceMock implements TodoService {
   public async findAllTodosByUser(userEmail: string): Promise<TodoRpDto[]> {
     return [createTodoRpDto('1')];
   }
@@ -20,7 +20,7 @@ export class TodoServiceTest implements TodoService {
   public async updateTodo(
     email: string,
     todoId: string,
-    todoData: UpdateTodoDto | CompleteTodoDto
+    todoData: UpdateTodoDto | CompleteTodoDto,
   ): Promise<TodoRpDto> {
     return createTodoRpDto(todoId);
   }

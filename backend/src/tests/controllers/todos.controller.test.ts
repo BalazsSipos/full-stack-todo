@@ -4,7 +4,7 @@ import { Container } from 'inversify';
 import { TYPES } from '../../config/types';
 import { TodoController, TodoService } from '../../interfaces/todos.interface';
 import { TodoControllerImpl } from '../../controllers/todos.controller';
-import { TodoServiceTest } from '../implementations/TodoServiceTest';
+import { TodoServiceMock } from '../implementations/TodoServiceMock';
 import { beforeEach, expect, it } from '@jest/globals';
 import { createTodoRpDto } from '../entityFactory';
 import httpMocks from 'node-mocks-http';
@@ -14,7 +14,7 @@ let container = new Container();
 beforeEach(() => {
   container = new Container();
   container.bind<TodoController>(TYPES.TodoController).to(TodoControllerImpl);
-  container.bind<TodoService>(TYPES.TodoService).to(TodoServiceTest);
+  container.bind<TodoService>(TYPES.TodoService).to(TodoServiceMock);
 });
 
 it('Should return a todo', () => {
@@ -35,6 +35,6 @@ it('Should return a todo', () => {
     (error) => {
       console.log('error', error);
       throw new Error('error');
-    }
+    },
   );
 });
