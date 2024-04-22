@@ -60,7 +60,7 @@ export class TodoServiceImpl implements TodoService {
   public async updateTodo(
     email: string,
     todoId: string,
-    todoData: UpdateTodoDto | CompleteTodoDto
+    todoData: UpdateTodoDto | CompleteTodoDto,
   ): Promise<TodoRpDto> {
     if (Object.prototype.hasOwnProperty.call(todoData, 'completed')) {
       return this.completeTodo(email, todoId, todoData as CompleteTodoDto);
@@ -83,7 +83,7 @@ export class TodoServiceImpl implements TodoService {
     return todoEntity.createdBy.email === email || todoEntity.performedBy.email === email;
   }
 
-  public async editTodo(email: string, todoId: string, todoData: UpdateTodoDto): Promise<TodoRpDto> {
+  private async editTodo(email: string, todoId: string, todoData: UpdateTodoDto): Promise<TodoRpDto> {
     const todoEntity: TodoEntity = await this.todoRepository.findByTodoId(Number(todoId));
 
     this.validateTodoData(email, todoEntity, todoData);

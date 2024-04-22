@@ -1,30 +1,46 @@
-import { CreateTodoDto, TodoRpDto } from "../dtos/todos.dto"
-import { CreateUserDto, UserRpDto } from "../dtos/users.dto"
-import { TodoEntity } from "../entity/todos.entity"
-import { UserEntity } from "../entity/users.entity"
-import { classes } from "@automapper/classes"
-import { createMap, createMapper, forMember, mapFrom, typeConverter } from "@automapper/core"
+import { CreateTodoDto, TodoRpDto } from '../dtos/todos.dto';
+import { CreateUserDto, UserRpDto } from '../dtos/users.dto';
+import { TodoEntity } from '../entity/todos.entity';
+import { UserEntity } from '../entity/users.entity';
+import { classes } from '@automapper/classes';
+import { createMap, createMapper, forMember, mapFrom, typeConverter } from '@automapper/core';
 
 // Create and export the mapper
 export const mapper = createMapper({
   strategyInitializer: classes(),
-})
+});
 
-createMap(mapper, UserEntity, UserRpDto)
-createMap(mapper, CreateUserDto, UserEntity)
-createMap(mapper, TodoEntity, TodoRpDto)
-createMap(mapper, TodoRpDto, TodoEntity)
+createMap(mapper, UserEntity, UserRpDto);
+createMap(mapper, CreateUserDto, UserEntity);
+createMap(
+  mapper,
+  TodoEntity,
+  TodoRpDto,
+  forMember(
+    (d) => d?.id,
+    mapFrom((s) => s.id.toString()),
+  ),
+  forMember(
+    (d) => d?.startingDate,
+    mapFrom((s) => s.startingDate.toISOString()),
+  ),
+  forMember(
+    (d) => d?.createdAt,
+    mapFrom((s) => s.createdAt.toISOString()),
+  ),
+);
+createMap(mapper, TodoRpDto, TodoEntity);
 createMap(
   mapper,
   CreateTodoDto,
   TodoEntity,
   forMember(
     (d) => d.completed,
-    mapFrom(() => false)
+    mapFrom(() => false),
   ),
   forMember(
     (d) => d.progress,
-    mapFrom(() => 0)
+    mapFrom(() => 0),
   ),
-  typeConverter(String, Date, (date) => new Date(date))
-)
+  typeConverter(String, Date, (date) => new Date(date)),
+);

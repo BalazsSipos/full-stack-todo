@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "esnext.asynciterable"],
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["./src/types", "node_modules/@types"],
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -19,8 +19,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": true,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],
-  "exclude": ["node_modules", "src/http", "src/logs", "src/tests"]
+  "exclude": ["node_modules", "src/http", "src/logs", "src/tests"],
+  "files": ["src/types/express/global.d.ts"]
 }
