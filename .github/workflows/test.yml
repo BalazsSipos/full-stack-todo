@@ -1,5 +1,15 @@
-name: Run tests
-on: [push, pull_request]
+name: Run backend tests
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: backend
 jobs:
   test:
     runs-on: ubuntu-latest
