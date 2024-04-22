@@ -10,10 +10,26 @@ export const mapper = createMapper({
   strategyInitializer: classes(),
 })
 
-createMap(mapper, UserEntity, UserRpDto)
-createMap(mapper, CreateUserDto, UserEntity)
-createMap(mapper, TodoEntity, TodoRpDto)
-createMap(mapper, TodoRpDto, TodoEntity)
+createMap(mapper, UserEntity, UserRpDto);
+createMap(mapper, CreateUserDto, UserEntity);
+createMap(
+  mapper,
+  TodoEntity,
+  TodoRpDto,
+  forMember(
+    (d) => d?.id,
+    mapFrom((s) => s.id.toString()),
+  ),
+  forMember(
+    (d) => d?.startingDate,
+    mapFrom((s) => s.startingDate.toISOString()),
+  ),
+  forMember(
+    (d) => d?.createdAt,
+    mapFrom((s) => s.createdAt.toISOString()),
+  ),
+);
+createMap(mapper, TodoRpDto, TodoEntity);
 createMap(
   mapper,
   CreateTodoDto,
