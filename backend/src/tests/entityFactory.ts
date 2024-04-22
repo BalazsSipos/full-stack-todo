@@ -23,8 +23,8 @@ export const createTodoEntity = (identifier: number): TodoEntity => {
     completed: false,
     location: `location${identifier}`,
     progress: identifier,
-    startingDate: new Date(),
-    createdAt: new Date(),
+    startingDate: new Date('2020-01-01T00:00:00.000Z'),
+    createdAt: new Date('2020-01-01T00:00:00.000Z'),
     createdBy: createUserEntityWithoutTodos(identifier),
     performedBy: createUserEntityWithoutTodos(identifier),
   };
@@ -40,19 +40,20 @@ export const createTodoRpDto = (identifier: string): TodoRpDto => {
     completed: false,
     location: `location${identifier}`,
     progress: +identifier,
-    startingDate: '2020/01/01',
-    createdAt: '2020/01/01',
-    createdBy: createUserRpDtoWithoutTodos(identifier),
-    performedBy: createUserRpDtoWithoutTodos(identifier),
+    startingDate: '2020-01-01T00:00:00.000Z',
+    createdAt: '2020-01-01T00:00:00.000Z',
+    createdBy: createUserRpDtoWithoutTodos(identifier, false),
+    performedBy: createUserRpDtoWithoutTodos(identifier, false),
   };
   return todoEntityRpDto;
 };
 
-export const createUserRpDtoWithoutTodos = (identifier: string): UserRpDto => {
+export const createUserRpDtoWithoutTodos = (identifier: string, showNumberOfTodos): UserRpDto => {
   const userRpDto: UserRpDto = {
     email: `email${identifier}`,
     name: `name${identifier}`,
-    numberOfTodos: 0,
+    numberOfTodos: showNumberOfTodos ? 0 : undefined,
+    image: undefined,
   };
   return userRpDto;
 };
