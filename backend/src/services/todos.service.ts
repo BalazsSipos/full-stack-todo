@@ -60,7 +60,7 @@ export class TodoServiceImpl implements TodoService {
   public async updateTodo(
     email: string,
     todoId: string,
-    todoData: UpdateTodoDto | CompleteTodoDto
+    todoData: UpdateTodoDto | CompleteTodoDto,
   ): Promise<TodoRpDto> {
     if (Object.prototype.hasOwnProperty.call(todoData, 'completed')) {
       return this.completeTodo(email, todoId, todoData as CompleteTodoDto);

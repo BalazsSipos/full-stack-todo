@@ -1,22 +1,22 @@
-import { AutoMap } from '@automapper/classes'
-import { IsEmail, IsString } from 'class-validator'
+import { AutoMap } from '@automapper/classes';
+import { IsEmail, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
   @AutoMap()
-  public email: string
+  public email: string;
 
   @IsString()
   @AutoMap()
-  public name: string
+  public name: string;
 }
 
 export class UserRpDto {
   @AutoMap()
-  email: string
+  email: string;
   @AutoMap()
-  name: string
+  name: string;
   @AutoMap()
-  image?: string
-  numberOfTodos: number
+  image?: string;
+  numberOfTodos?: number;
 }

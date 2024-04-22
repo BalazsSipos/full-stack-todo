@@ -1,8 +1,8 @@
-import { AppDataSource } from '../data-source'
-import { TodoEntity } from '../entity/todos.entity'
+import { AppDataSource } from '../data-source';
+import { TodoEntity } from '../entity/todos.entity';
 
 export const TodoRepository = AppDataSource.getRepository(TodoEntity).extend({
-  findByTodoId(todoId: number) {
+  findByTodoId(todoId: number): TodoEntity {
     return this.findOne({
       where: {
         id: todoId,
@@ -11,9 +11,9 @@ export const TodoRepository = AppDataSource.getRepository(TodoEntity).extend({
         createdBy: true,
         performedBy: true,
       },
-    })
+    });
   },
-  findOpenTodosByUser(userEmail: string) {
+  findOpenTodosByUser(userEmail: string): TodoEntity[] {
     return this.find({
       relations: {
         createdBy: true,
@@ -23,6 +23,6 @@ export const TodoRepository = AppDataSource.getRepository(TodoEntity).extend({
         { completed: false, createdBy: { email: userEmail } },
         { completed: false, performedBy: { email: userEmail } },
       ],
-    })
+    });
   },
-})
+});
