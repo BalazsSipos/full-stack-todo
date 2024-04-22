@@ -1,4 +1,4 @@
-name: Run backend tests
+name: Run Backend tests
 on:
   push:
     paths:
