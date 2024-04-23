@@ -1,0 +1,43 @@
+name: Run Backend checks
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/*'
+  pull_request:
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: backend
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint code
+        run: npm run eslint
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci --force
+      - name: Test code
+        run: npm run test
