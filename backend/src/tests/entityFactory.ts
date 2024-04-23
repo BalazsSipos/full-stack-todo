@@ -3,7 +3,7 @@ import { TodoRpDto } from '../dtos/todos.dto';
 import { UserEntity } from '../entity/users.entity';
 import { UserRpDto } from '../dtos/users.dto';
 
-export const createUserEntityWithoutTodos = (identifier: number): UserEntity => {
+export const createUserEntityWithoutTodos = (identifier: string): UserEntity => {
   const userEntity: UserEntity = {
     email: `email${identifier}`,
     name: `name${identifier}`,
@@ -14,15 +14,15 @@ export const createUserEntityWithoutTodos = (identifier: number): UserEntity => 
   return userEntity;
 };
 
-export const createTodoEntity = (identifier: number): TodoEntity => {
+export const createTodoEntity = (identifier: string): TodoEntity => {
   const todoEntity: TodoEntity = {
-    id: identifier,
+    id: parseInt(identifier),
     title: `title${identifier}`,
     description: `description${identifier}`,
     category: `category${identifier}`,
     completed: false,
     location: `location${identifier}`,
-    progress: identifier,
+    progress: parseInt(identifier),
     startingDate: new Date('2020-01-01T00:00:00.000Z'),
     createdAt: new Date('2020-01-01T00:00:00.000Z'),
     createdBy: createUserEntityWithoutTodos(identifier),
