@@ -21,7 +21,7 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: backend/node_modules
           key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
@@ -38,7 +38,7 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: backend/node_modules
           key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
