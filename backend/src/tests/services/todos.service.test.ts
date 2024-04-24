@@ -1,4 +1,3 @@
-// import 'reflect-metadata'
 import 'reflect-metadata';
 import { Container } from 'inversify';
 import { TYPES } from '../../config/types';
