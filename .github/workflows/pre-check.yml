@@ -18,11 +18,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm
+          path: node_modules
           key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Lint code
         run: npm run eslint
@@ -33,11 +35,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm
+          path: node_modules
           key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
         run: npm run test
