@@ -4,7 +4,7 @@ import { Container } from 'inversify';
 import { TYPES } from '../../config/types';
 import { TodoController, TodoService } from '../../interfaces/todos.interface';
 import { TodoControllerImpl } from '../../controllers/todos.controller';
-import { TodoServiceMock } from '../implementations/TodoServiceMock';
+import { TodoServiceMock } from '../../services/__mocks__/TodoServiceMock';
 import { beforeEach, expect, it } from '@jest/globals';
 import { createTodoRpDto } from '../entityFactory';
 import httpMocks from 'node-mocks-http';
@@ -29,7 +29,7 @@ it('Should return a todo', () => {
   todoController.getTodos(mockExpressRequest, mockExpressResponse).then(
     () => {
       const resData = mockExpressResponse._getJSONData();
-      expect(resData).toEqual([createTodoRpDto('1')]);
+      expect(resData).toEqual([createTodoRpDto('email')]);
       expect(mockExpressResponse.statusCode).toBe(200);
     },
     (error) => {

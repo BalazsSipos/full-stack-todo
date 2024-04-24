@@ -1,12 +1,13 @@
 import { TodoRpDto } from '../../dtos/todos.dto';
 import { TodoService } from '../../interfaces/todos.interface';
-import { createTodoRpDto } from '../entityFactory';
+import { createTodoRpDto } from '../../tests/entityFactory';
 import { injectable } from 'inversify';
 
 @injectable()
 export class TodoServiceMock implements TodoService {
   public async findAllTodosByUser(userEmail: string): Promise<TodoRpDto[]> {
-    return [createTodoRpDto(userEmail)];
+    const newLocal = [createTodoRpDto(userEmail)];
+    return newLocal;
   }
 
   public async findTodoByUserEmailAndTodoId(userId: string, todoId: string): Promise<TodoRpDto> {
