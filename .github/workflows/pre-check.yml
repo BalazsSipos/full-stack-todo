@@ -26,10 +26,10 @@ jobs:
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-      - name: Lint code
-        run: npm run eslint
       - name: Check formatting
         run: npm run format:check
+      - name: Lint code
+        run: npm run eslint
   test:
     needs: lint
     runs-on: ubuntu-latest
