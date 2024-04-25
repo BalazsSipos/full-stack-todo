@@ -27,9 +27,9 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Lint code
-        run: |
-          npm run eslint
-          npm run format:check
+        run: npm run eslint
+      - name: Check formatting
+        run: npm run format:check
   test:
     needs: lint
     runs-on: ubuntu-latest
