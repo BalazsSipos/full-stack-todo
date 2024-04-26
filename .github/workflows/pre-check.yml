@@ -17,15 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Cache dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: backend/node_modules
-          key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: Load and cache dependencies
+        uses: ./.github/actions/cache-dependencies
       - name: Check formatting
         run: npm run format:check
       - name: Lint code
@@ -36,14 +29,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Cache dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: backend/node_modules
-          key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: Load and cache dependencies
+        uses: ./.github/actions/cache-dependencies
       - name: Test code
         run: npm run test
