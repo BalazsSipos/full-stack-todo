@@ -20,7 +20,7 @@
     "resolveJsonModule": true,
     "importHelpers": true,
     "baseUrl": "src",
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "src/**/*.json", ".env"],
   "exclude": ["node_modules", "src/http", "src/logs", "src/tests"],
