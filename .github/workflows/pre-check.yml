@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'backend/**'
-      - '.github/workflows/*'
+      - '.github/*'
   pull_request:
     paths:
       - 'backend/**'
