@@ -17,10 +17,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.11.0'
       - name: Load and cache dependencies
         uses: ./.github/actions/cache-dependencies
       - name: Check formatting
