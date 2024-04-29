@@ -118,7 +118,11 @@ export class TodoServiceImpl implements TodoService {
     return mapper.map(updateTodoData, TodoEntity, TodoRpDto);
   }
 
-  private async validateTodoData(email: string, todoEntity: TodoEntity, todoData: any): Promise<void> {
+  private async validateTodoData(
+    email: string,
+    todoEntity: TodoEntity,
+    todoData: CompleteTodoDto | UpdateTodoDto,
+  ): Promise<void> {
     if (isEmpty(todoData)) throw new HttpException(400, 'todoData is empty');
     if (!todoEntity) throw new HttpException(409, "Todo doesn't exist");
 

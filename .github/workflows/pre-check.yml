@@ -1,0 +1,35 @@
+name: Run Backend checks
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/*'
+  pull_request:
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: backend
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Load and cache dependencies
+        uses: ./.github/actions/cache-dependencies
+      - name: Check formatting
+        run: npm run format:check
+      - name: Lint code
+        run: npm run eslint
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Load and cache dependencies
+        uses: ./.github/actions/cache-dependencies
+      - name: Test code
+        run: npm run test

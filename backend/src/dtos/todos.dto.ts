@@ -1,65 +1,65 @@
-import { AutoMap } from '@automapper/classes'
-import { IsInt, IsString, Max, Min } from 'class-validator'
-import { UserRpDto } from './users.dto'
+import { AutoMap } from '@automapper/classes';
+import { IsInt, IsString, Max, Min } from 'class-validator';
+import { UserRpDto } from './users.dto';
 
 export class CreateTodoDto {
   @IsString()
-  title: string
+  title: string;
 
-  description?: string
+  description?: string;
 
-  category?: string
+  category?: string;
 
-  location?: string
+  location?: string;
 
   // @IsDate()
-  startingDate: string
+  startingDate: string;
 
-  performedByEmail: string
+  performedByEmail: string;
 }
 
 export class UpdateTodoDto extends CreateTodoDto {
   @IsInt()
   @Min(0)
   @Max(100)
-  progress?: number
+  progress?: number;
 }
 
 export class CompleteTodoDto {
-  completed: boolean
+  completed: boolean;
 }
 
 export class TodoRpDto {
   @AutoMap()
-  id: string
+  id: string;
 
   @AutoMap()
-  title: string
+  title: string;
 
   @AutoMap()
-  description?: string
+  description?: string;
 
   @AutoMap()
-  category: string
+  category: string;
 
   @AutoMap()
-  completed: boolean
+  completed: boolean;
 
   @AutoMap()
-  location?: string
+  location?: string;
 
   @AutoMap()
-  progress: number
+  progress: number;
 
   @AutoMap()
-  startingDate: string
+  startingDate: string;
 
   @AutoMap()
-  createdAt: string
+  createdAt: string;
 
   @AutoMap(() => UserRpDto)
-  performedBy: UserRpDto
+  performedBy: UserRpDto;
 
   @AutoMap(() => UserRpDto)
-  createdBy: UserRpDto
+  createdBy: UserRpDto;
 }
