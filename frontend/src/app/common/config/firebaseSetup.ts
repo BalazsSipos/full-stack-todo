@@ -1,5 +1,5 @@
-import 'firebase/compat/auth'
-import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth';
+import firebase from 'firebase/compat/app';
 
 // Environment variables should be used later
 const firebaseConfig = {
@@ -9,8 +9,8 @@ const firebaseConfig = {
   storageBucket: process.env.STORAGE_BUCKET,
   messagingSenderId: process.env.MESSAGING_SENDER_ID,
   appId: process.env.APP_ID,
-}
+};
 
-firebase.initializeApp(firebaseConfig)
+firebase.initializeApp(firebaseConfig);
 
-export const auth = firebase.auth()
+export const auth = firebase.auth();

@@ -1,5 +1,5 @@
-import { Avatar, Box, Card, Stack, Typography } from '@mui/material'
-import { User } from '../models/User'
+import { Avatar, Box, Card, Stack, Typography } from '@mui/material';
+import { User } from '../models/User';
 
 export const UserItem = ({ user }: { user: User }) => {
   return (
@@ -16,5 +16,5 @@ export const UserItem = ({ user }: { user: User }) => {
         </Stack>
       </Box>
     </Card>
-  )
-}
+  );
+};

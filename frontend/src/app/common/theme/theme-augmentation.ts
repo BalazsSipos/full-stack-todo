@@ -1,18 +1,18 @@
-import '@mui/material/styles'
+import '@mui/material/styles';
 
 interface GlassTheme {
-  background: (opacity: number) => string
-  shadow: string
-  opacity: number
-  borderColor: string
+  background: (opacity: number) => string;
+  shadow: string;
+  opacity: number;
+  borderColor: string;
 }
 
 declare module '@mui/material/styles' {
   interface Theme {
-    glass: GlassTheme
+    glass: GlassTheme;
   }
   // allow configuration using `createTheme`
   interface ThemeOptions {
-    glass?: Partial<GlassTheme>
+    glass?: Partial<GlassTheme>;
   }
 }

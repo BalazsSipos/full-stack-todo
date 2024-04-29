@@ -1,22 +1,22 @@
-import { PersistedClient, Persistor } from 'react-query/persistQueryClient-experimental'
-import { del, get, set } from 'idb-keyval'
+import { PersistedClient, Persistor } from 'react-query/persistQueryClient-experimental';
+import { del, get, set } from 'idb-keyval';
 
-let persistableClient: PersistedClient | undefined
+let persistableClient: PersistedClient | undefined;
 
 export const persistReactQueryIndexedDBStorage = async () => {
   if (!persistableClient) {
-    return
+    return;
   }
   await set('reactQuery', JSON.stringify(persistableClient)).catch((error) => {
-    console.group('IndexedDB persister')
-    console.error(error)
-    console.log(persistableClient)
-    console.groupEnd()
-  })
-  persistableClient = undefined
-}
+    console.group('IndexedDB persister');
+    console.error(error);
+    console.log(persistableClient);
+    console.groupEnd();
+  });
+  persistableClient = undefined;
+};
 
-setInterval(persistReactQueryIndexedDBStorage, 1000)
+setInterval(persistReactQueryIndexedDBStorage, 1000);
 
 /**
  * Creates an Indexed DB persister
@@ -25,15 +25,15 @@ setInterval(persistReactQueryIndexedDBStorage, 1000)
 export function createIDBPersister(idbValidKey: IDBValidKey = 'reactQuery') {
   return {
     persistClient: async (client: PersistedClient) => {
-      persistableClient = client
+      persistableClient = client;
     },
     restoreClient: async () => {
-      const raw = await get<string>(idbValidKey)
+      const raw = await get<string>(idbValidKey);
       if (!raw) {
-        return undefined
+        return undefined;
       }
-      return JSON.parse(raw) as PersistedClient
+      return JSON.parse(raw) as PersistedClient;
     },
     removeClient: () => del(idbValidKey),
-  } as Persistor
+  } as Persistor;
 }

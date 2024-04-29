@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material'
+import { createTheme } from '@mui/material';
 
 const palette = {
   primary: {
@@ -23,8 +23,8 @@ const palette = {
   },
   success: {
     main: '#8cac9c',
-  }
-} as const
+  },
+} as const;
 
 const lightTheme = createTheme({
   palette: {
@@ -40,9 +40,9 @@ const lightTheme = createTheme({
     opacity: 0.4,
     borderColor: 'rgba(255,255,255,0.3)',
     shadow: 'rgba(0,0,0,0.1)',
-  }
-})
+  },
+});
 
 export const useTheme = () => {
-  return lightTheme
-}
+  return lightTheme;
+};
