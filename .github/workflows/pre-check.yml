@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'backend/**'
-      - '.github/*'
+      - '.github/**'
   pull_request:
     paths:
       - 'backend/**'
