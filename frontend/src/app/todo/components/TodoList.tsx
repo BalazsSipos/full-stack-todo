@@ -41,26 +41,24 @@ export const TodoList = () => {
     content = <Loading />;
   }
 
-  if (data) {
-    if (!isLoading && data.length > 0) {
-      content = (
-        <Grid
-          container
-          spacing={{ xs: 2, md: 4, lg: 8 }}
-          // sx={{ p: { xs: 2, md: 4 } }}
-          columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}
-        >
-          {data.map((todo: Todo) => (
-            <Grid item xs={1} md={3} key={todo.id} justifyContent="center">
-              <TodoItem todo={todo} />
-            </Grid>
-          ))}
-        </Grid>
-      );
-    }
-    if (!isLoading && data.length == 0) {
-      content = <EmptyListCard />;
-    }
+  if (data && data.length > 0) {
+    content = (
+      <Grid
+        container
+        spacing={{ xs: 2, md: 4, lg: 8 }}
+        // sx={{ p: { xs: 2, md: 4 } }}
+        columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}
+      >
+        {data.map((todo: Todo) => (
+          <Grid item xs={1} md={3} key={todo.id} justifyContent="center">
+            <TodoItem todo={todo} />
+          </Grid>
+        ))}
+      </Grid>
+    );
+  }
+  if (data && data.length == 0) {
+    content = <EmptyListCard />;
   }
 
   return content;

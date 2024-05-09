@@ -1,4 +1,6 @@
 import { CardContent, Grid, Stack, Typography } from '@mui/material';
+import { Loading } from '../../pages/Loading';
+import { ReactNode } from 'react';
 import { UserItem } from './UserItem';
 import { useUsers } from '../../common/hooks/queries/use-user';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
@@ -11,18 +13,30 @@ const EmptyListCard = () => (
 );
 
 export const UserList = () => {
-  const usersQuery = useUsers();
-  const userList = usersQuery.data ?? [];
+  const { data, isLoading } = useUsers();
 
-  return (
-    <Grid item xs={1}>
-      <Stack sx={{ m: 3 }} spacing={2}>
-        <Typography variant="h6">List of users</Typography>
-        {userList.map((userItem) => (
-          <UserItem user={userItem} key={userItem.email} />
-        ))}
-        {userList.length ? null : <EmptyListCard />}
-      </Stack>
-    </Grid>
-  );
+  let content: ReactNode;
+
+  if (isLoading) {
+    content = <Loading />;
+  }
+
+  if (data && data.length > 0) {
+    content = (
+      <Grid item xs={1}>
+        <Stack sx={{ m: 3 }} spacing={2}>
+          <Typography variant="h6">List of users</Typography>
+          {data.map((userItem) => (
+            <UserItem user={userItem} key={userItem.email} />
+          ))}
+          {data.length ? null : <EmptyListCard />}
+        </Stack>
+      </Grid>
+    );
+  }
+  if (data && data.length == 0) {
+    content = <EmptyListCard />;
+  }
+
+  return content;
 };
