@@ -1,4 +1,4 @@
-import { AuthContext } from '../../common/components/AuthContext';
+import { AuthContext } from '../common/components/AuthContext';
 import {
   Box,
   Card,
@@ -19,13 +19,13 @@ import {
   Typography,
 } from '@mui/material';
 import { DateTime } from 'luxon';
-import { GlassSurface } from '../../common/components/GlassSurface';
+import { GlassSurface } from '../common/components/GlassSurface';
 import { MoreHoriz, SvgIconComponent } from '@mui/icons-material';
 import { Todo } from '../models/Todo';
 import { TodoForm } from './TodoForm';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTodoDelete, useTodoPatch } from '../../common/hooks/queries/use-todo';
+import { useTodoDelete, useTodoPatch } from '../common/hooks/queries/use-todo';
 import BlockIcon from '@mui/icons-material/Block';
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

@@ -1,4 +1,4 @@
-import { User } from '../../user/models/User';
+import { User } from './User';
 
 export const todoStatuses = ['Open', 'Done', 'Obsolete'] as const;
 export type TodoStatus = typeof todoStatuses[number];

@@ -1,12 +1,12 @@
-import { AuthContext } from '../../common/components/AuthContext';
+import { AuthContext } from '../common/components/AuthContext';
 import { Card, CardContent, Grid, Typography } from '@mui/material';
-import { GlassSurface } from '../../common/components/GlassSurface';
-import { Loading } from '../../pages/Loading';
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { GlassSurface } from '../common/components/GlassSurface';
+import { Loading } from '../pages/Loading';
 import { Todo } from '../models/Todo';
 import { TodoItem } from './TodoItem';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTodos } from '../../common/hooks/queries/use-todo';
+import { useTodos } from '../common/hooks/queries/use-todo';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
 const EmptyListCard = () => (
@@ -35,7 +35,7 @@ export const TodoList = () => {
 
   const { data, isLoading } = useTodos(email ?? '', token);
 
-  let content: ReactNode;
+  let content = <></>;
 
   if (isLoading) {
     content = <Loading />;

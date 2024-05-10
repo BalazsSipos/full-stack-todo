@@ -1,8 +1,7 @@
 import { CardContent, Grid, Stack, Typography } from '@mui/material';
-import { Loading } from '../../pages/Loading';
-import { ReactNode } from 'react';
+import { Loading } from '../pages/Loading';
 import { UserItem } from './UserItem';
-import { useUsers } from '../../common/hooks/queries/use-user';
+import { useUsers } from '../common/hooks/queries/use-user';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
 const EmptyListCard = () => (
@@ -15,7 +14,7 @@ const EmptyListCard = () => (
 export const UserList = () => {
   const { data, isLoading } = useUsers();
 
-  let content: ReactNode;
+  let content = <></>;
 
   if (isLoading) {
     content = <Loading />;

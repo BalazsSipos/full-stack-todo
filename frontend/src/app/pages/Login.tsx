@@ -1,6 +1,6 @@
 import * as firebaseui from 'firebaseui';
 import { AuthContext } from '../common/components/AuthContext';
-import { User } from '../user/models/User';
+import { User } from '../models/User';
 import { useContext, useEffect } from 'react';
 import { useUserCreation } from '../common/hooks/queries/use-user';
 import firebase from 'firebase/compat';

@@ -1,5 +1,5 @@
 import { AuthContext } from '../../components/AuthContext';
-import { Todo } from '../../../todo/models/Todo';
+import { Todo } from '../../../models/Todo';
 import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';

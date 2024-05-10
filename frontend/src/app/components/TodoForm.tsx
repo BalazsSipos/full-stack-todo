@@ -2,13 +2,13 @@ import { Button, Card, CardActions, CardContent, CardHeader, Stack, TextField } 
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 
-import { AuthContext } from '../../common/components/AuthContext';
-import { GlassSurface } from '../../common/components/GlassSurface';
+import { AuthContext } from '../common/components/AuthContext';
+import { GlassSurface } from '../common/components/GlassSurface';
 import { LoadingButton } from '@mui/lab';
 import { Todo } from '../models/Todo';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTodoCreation, useTodoPatch } from '../../common/hooks/queries/use-todo';
+import { useTodoCreation, useTodoPatch } from '../common/hooks/queries/use-todo';
 
 interface Props {
   todo?: Todo;

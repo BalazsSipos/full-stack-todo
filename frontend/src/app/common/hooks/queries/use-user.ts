@@ -1,4 +1,4 @@
-import { User } from '../../../user/models/User';
+import { User } from '../../../models/User';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import firebase from 'firebase/compat';
 
