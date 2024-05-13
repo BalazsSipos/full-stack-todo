@@ -37,7 +37,7 @@ export const useTodos = (requestedEmail: string, token: string | undefined) => {
       }
     },
     {
-      enabled: token !== 'invalid',
+      enabled: token !== 'invalid' && requestedEmail !== '',
       staleTime: 60 * 60 * 1000,
       keepPreviousData: true,
     }

@@ -10,6 +10,7 @@ import { Loading } from './pages/Loading';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { Login } from './pages/Login';
 import { PageNotFound } from './PageNotFound';
+import { Provider } from 'react-redux';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { StrictMode, Suspense, useContext } from 'react';
@@ -17,6 +18,7 @@ import { Todos } from './pages/Todos';
 import { Users } from './pages/Users';
 import { auth } from './common/config/firebaseSetup';
 import { queryClient } from './common/query/query-client';
+import { store } from './store/store';
 import { useTheme } from './common/theme/use-theme';
 
 const AppRouter = () => {
@@ -45,23 +47,26 @@ const AppRouter = () => {
 };
 
 export const App = () => {
+  console.log('App futott');
   const theme = useTheme();
   return (
     <StrictMode>
       <AuthProvider>
-        <BrowserRouter>
-          <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={DateTime.now().locale}>
-                <AppFrame>
-                  <AppRouter />
-                </AppFrame>
-              </LocalizationProvider>
-            </ThemeProvider>
-            <ReactQueryDevtools />
-          </QueryClientProvider>
-        </BrowserRouter>
+        <Provider store={store}>
+          <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={DateTime.now().locale}>
+                  <AppFrame>
+                    <AppRouter />
+                  </AppFrame>
+                </LocalizationProvider>
+              </ThemeProvider>
+              <ReactQueryDevtools />
+            </QueryClientProvider>
+          </BrowserRouter>
+        </Provider>
       </AuthProvider>
     </StrictMode>
   );

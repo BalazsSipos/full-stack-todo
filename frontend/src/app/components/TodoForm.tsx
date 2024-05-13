@@ -6,6 +6,8 @@ import { AuthContext } from '../common/components/AuthContext';
 import { GlassSurface } from '../common/components/GlassSurface';
 import { LoadingButton } from '@mui/lab';
 import { Todo } from '../models/Todo';
+import { incrementOwnTodoNumber } from '../store/user-slice';
+import { useAppDispatch } from '../store/hooks';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTodoCreation, useTodoPatch } from '../common/hooks/queries/use-todo';
@@ -29,6 +31,9 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
       });
     }
   }, [firebaseUser]);
+
+  const dispatch = useAppDispatch();
+
   const form = useRef<HTMLFormElement | null>();
   const [startingDate, setStartingDate] = useState(todo?.startingDate ? DateTime.fromISO(todo.startingDate) : null);
   // const [createdAt, setCreatedAt] = useState(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
@@ -73,6 +78,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
       updateTodo.mutate(newTodo, { onSuccess });
     } else {
       createTodo.mutate(newTodo, { onSuccess });
+      dispatch(incrementOwnTodoNumber());
     }
   };
 

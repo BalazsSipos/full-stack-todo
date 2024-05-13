@@ -23,6 +23,8 @@ import { GlassSurface } from '../common/components/GlassSurface';
 import { MoreHoriz, SvgIconComponent } from '@mui/icons-material';
 import { Todo } from '../models/Todo';
 import { TodoForm } from './TodoForm';
+import { decrementOwnTodoNumber } from '../store/user-slice';
+import { useAppDispatch } from '../store/hooks';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTodoDelete, useTodoPatch } from '../common/hooks/queries/use-todo';
@@ -63,12 +65,16 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
   const patchTodo = useTodoPatch(email ?? '', token, Number(todo.id));
   const deleteTodo = useTodoDelete(email ?? '', token, Number(todo.id));
 
+  const dispatch = useAppDispatch();
+
   const completed = () => {
     patchTodo.mutate({ completed: true });
+    dispatch(decrementOwnTodoNumber());
   };
 
   const deleted = () => {
     deleteTodo.mutate();
+    dispatch(decrementOwnTodoNumber());
   };
 
   const getIcon = (category: string) => {
