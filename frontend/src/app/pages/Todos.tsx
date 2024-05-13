@@ -1,9 +1,8 @@
-import { Grid } from '@mui/material'
-import { TodoForm } from '../components/TodoForm'
-import { TodoList } from '../components/TodoList'
+import { Grid } from '@mui/material';
+import { TodoForm } from '../components/TodoForm';
+import { TodoList } from '../components/TodoList';
 
 export const Todos = () => {
- 
   return (
     <Grid container columns={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4 }} direction="row" spacing={{ xs: 2, md: 4, lg: 8 }}>
       <Grid item xs={1}>
@@ -13,5 +12,5 @@ export const Todos = () => {
         <TodoList />
       </Grid>
     </Grid>
-  )
-}
+  );
+};

@@ -1,5 +1,5 @@
 import { AuthContext } from '../../components/AuthContext';
-import { Todo } from '../../../todo/models/Todo';
+import { Todo } from '../../../models/Todo';
 import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -12,9 +12,6 @@ export const useTodos = (requestedEmail: string, token: string | undefined) => {
   return useQuery<Todo[], unknown>(
     ['todos', 'list', requestedEmail, firebaseUser?.email, token !== 'invalid'],
     async () => {
-      if (token === 'invalid' && firebaseUser) {
-        return [];
-      }
       try {
         const url = new URL(`/todos?user=${requestedEmail}`, process.env.API_URL);
         const fetchResponse = await fetch(url.toString(), {
@@ -40,7 +37,7 @@ export const useTodos = (requestedEmail: string, token: string | undefined) => {
       }
     },
     {
-      enabled: true,
+      enabled: token !== 'invalid' && requestedEmail !== '',
       staleTime: 60 * 60 * 1000,
       keepPreviousData: true,
     }

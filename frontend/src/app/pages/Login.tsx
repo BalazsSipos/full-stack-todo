@@ -1,20 +1,20 @@
-import * as firebaseui from 'firebaseui'
-import { AuthContext } from '../common/components/AuthContext'
-import { User } from '../user/models/User'
-import { useContext, useEffect } from 'react'
-import { useUserCreation } from '../common/hooks/queries/use-user'
-import firebase from 'firebase/compat'
+import * as firebaseui from 'firebaseui';
+import { AuthContext } from '../common/components/AuthContext';
+import { User } from '../models/User';
+import { useContext, useEffect } from 'react';
+import { useUserCreation } from '../common/hooks/queries/use-user';
+import firebase from 'firebase/compat';
 
 interface GoogleUser {
-  email: string
-  name: string
-  picture: string
+  email: string;
+  name: string;
+  picture: string;
 }
 
 export const Login = ({ auth }: { auth: firebase.auth.Auth }) => {
-  const context = useContext(AuthContext)
-  const firebaseUser = context?.firebaseUser ?? null
-  const createUser = useUserCreation()
+  const context = useContext(AuthContext);
+  const firebaseUser = context?.firebaseUser ?? null;
+  const createUser = useUserCreation();
 
   const getUserFromInput = (userInput: GoogleUser) => {
     const user: User = {
@@ -23,12 +23,12 @@ export const Login = ({ auth }: { auth: firebase.auth.Auth }) => {
       image: userInput.picture,
       id: '',
       numberOfTodos: 0,
-    }
-    return user
-  }
+    };
+    return user;
+  };
 
   useEffect(() => {
-    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth)
+    const ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
 
     ui.start('.firebase-auth-container', {
       signInFlow: 'popup',
@@ -40,13 +40,13 @@ export const Login = ({ auth }: { auth: firebase.auth.Auth }) => {
       signInSuccessUrl: '/',
       callbacks: {
         signInSuccessWithAuthResult(authResult: firebase.auth.UserCredential, redirectUrl) {
-          const user = getUserFromInput(authResult.additionalUserInfo?.profile as GoogleUser)
-          createUser.mutate(user)
-          return true
+          const user = getUserFromInput(authResult.additionalUserInfo?.profile as GoogleUser);
+          createUser.mutate(user);
+          return true;
         },
       },
-    })
-  }, [auth, createUser])
+    });
+  }, [auth, createUser]);
 
-  return <>{!firebaseUser && <div className="firebase-auth-container"></div>}</>
-}
+  return <>{!firebaseUser && <div className="firebase-auth-container"></div>}</>;
+};

@@ -1,4 +1,4 @@
-import { Box, LinearProgress } from '@mui/material'
+import { Box, LinearProgress } from '@mui/material';
 
 export const Loading = () => {
   return (
@@ -8,5 +8,5 @@ export const Loading = () => {
         <LinearProgress />
       </Box>
     </>
-  )
-}
+  );
+};
