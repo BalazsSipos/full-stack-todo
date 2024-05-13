@@ -8,8 +8,6 @@ const initialState: UserState = {
   changeInTodos: 0,
 };
 
-console.log('Slice created-----!');
-
 export const userSlice = createSlice({
   name: 'todo',
   initialState: initialState,

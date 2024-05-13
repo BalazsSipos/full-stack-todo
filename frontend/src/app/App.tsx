@@ -47,7 +47,6 @@ const AppRouter = () => {
 };
 
 export const App = () => {
-  console.log('App futott');
   const theme = useTheme();
   return (
     <StrictMode>
