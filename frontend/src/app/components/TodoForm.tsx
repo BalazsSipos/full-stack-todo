@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, CardHeader, Stack, TextField } from '@mui/material';
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, Stack, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 
@@ -34,12 +34,19 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
 
   const dispatch = useAppDispatch();
 
-  const form = useRef<HTMLFormElement | null>();
+  const form = useRef<HTMLFormElement>(null);
   const [startingDate, setStartingDate] = useState(todo?.startingDate ? DateTime.fromISO(todo.startingDate) : null);
   // const [createdAt, setCreatedAt] = useState(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
 
   const createTodo = useTodoCreation(email ?? '', token);
   const updateTodo = useTodoPatch(email ?? '', token, Number(todo?.id));
+
+  const errorObject = createTodo.error || updateTodo.error;
+
+  let parsed;
+  if (errorObject) {
+    parsed = JSON.parse(errorObject.message ?? '{}');
+  }
 
   const loading = createTodo.isLoading || updateTodo.isLoading;
 
@@ -55,6 +62,11 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     onFinish?.();
   };
 
+  const onSuccessCreate = () => {
+    dispatch(incrementOwnTodoNumber());
+    onSuccess();
+  };
+
   const save = () => {
     if (!form.current || !email) {
       return;
@@ -64,30 +76,34 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     }
 
     const data = new FormData(form.current);
-    const newTodo: Partial<Todo> = {
-      id: todo?.id ?? undefined,
-      title: (data.get('title') as string) ?? '',
-      description: (data.get('description') as string) ?? '',
-      category: (data.get('category') as string) ?? '',
-      location: (data.get('location') as string) ?? '',
-      progress: Number(data.get('progress')) ?? 0,
-      startingDate: startingDate?.toISODate() ?? undefined,
-      performedByEmail: (data.get('performedBy') as string) ?? '',
-    };
+    const newTodo = new Todo();
+    newTodo.id = Number(todo?.id) ?? undefined;
+    newTodo.title = data.get('title') as string;
+    newTodo.description = data.get('description') as string;
+    newTodo.category = data.get('category') as string;
+    newTodo.location = data.get('location') as string;
+    newTodo.progress = Number(data.get('progress'));
+    newTodo.startingDate = startingDate?.toISODate();
+    newTodo.performedByEmail = data.get('performedBy') as string;
+
     if (todo) {
       updateTodo.mutate(newTodo, { onSuccess });
     } else {
-      createTodo.mutate(newTodo, { onSuccess });
-      dispatch(incrementOwnTodoNumber());
+      createTodo.mutate(newTodo, { onSuccess: onSuccessCreate });
     }
   };
 
   return (
     <GlassSurface component={Card}>
       <CardHeader title={todo ? 'Edit todo' : 'New todo'} />
-      <CardContent component="form" ref={form as any}>
+      <CardContent component="form" ref={form}>
         <Stack spacing={2}>
           <TextField name="title" label="Title" defaultValue={todo?.title} disabled={loading} />
+          {parsed?.title && (
+            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+              {parsed.title}
+            </Alert>
+          )}
           <TextField
             name="description"
             label="Description"
@@ -107,12 +123,22 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
               <TextField name="startingDate" {...params} helperText={params?.inputProps?.placeholder} />
             )}
           />
+          {parsed?.startingDate && (
+            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+              {parsed.startingDate}
+            </Alert>
+          )}
           <TextField
             name="performedBy"
             label="Performed by"
-            defaultValue={todo?.performedBy.email}
+            defaultValue={todo?.performedBy?.email}
             disabled={loading}
           />
+          {parsed?.performedByEmail && (
+            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+              {parsed.performedByEmail}
+            </Alert>
+          )}
         </Stack>
       </CardContent>
       <CardActions>

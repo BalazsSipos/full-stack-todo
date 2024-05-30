@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { TYPES } from '../config/types';
 import { TodoController, TodoService } from '../interfaces/todos.interface';
 import { TodoRpDto } from '../dtos/todos.dto';
@@ -36,18 +36,28 @@ export class TodoControllerImpl implements TodoController {
 
   // @UseBefore(validationMiddleware(CreateTodoDto, 'body'))
   // @UseAfter(validationMiddleware(CreateTodoDto, 'body'))
-  createTodo = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {
+  createTodo = async (req: Request, res: Response, next: NextFunction): Promise<Response<TodoRpDto>> => {
     const email = req.email;
-    const createdTodo: TodoRpDto = await this.todoService.createTodo(email, req.body);
-    return res.status(201).json(createdTodo);
+    try {
+      const createdTodo: TodoRpDto = await this.todoService.createTodo(email, req.body);
+      return res.status(201).json(createdTodo);
+    } catch (error) {
+      console.log('error van waze', error);
+      next(error);
+    }
   };
 
   // @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
-  updateTodo = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {
+  updateTodo = async (req: Request, res: Response, next: NextFunction): Promise<Response<TodoRpDto>> => {
     const email = req.email;
     const todoId = req.params.tid;
-    const updatedTodo: TodoRpDto = await this.todoService.updateTodo(email, todoId, req.body);
-    return res.status(200).json({ data: updatedTodo, message: 'updated' });
+    try {
+      const updatedTodo: TodoRpDto = await this.todoService.updateTodo(email, todoId, req.body);
+      return res.status(200).json({ data: updatedTodo, message: 'updated' });
+    } catch (error) {
+      console.log('error van waze', error);
+      next(error);
+    }
   };
 
   deleteTodo = async (req: Request, res: Response): Promise<Response<TodoRpDto>> => {

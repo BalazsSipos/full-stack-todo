@@ -39,7 +39,7 @@ export const Login = ({ auth }: { auth: firebase.auth.Auth }) => {
       ],
       signInSuccessUrl: '/',
       callbacks: {
-        signInSuccessWithAuthResult(authResult: firebase.auth.UserCredential, redirectUrl) {
+        signInSuccessWithAuthResult(authResult: firebase.auth.UserCredential) {
           const user = getUserFromInput(authResult.additionalUserInfo?.profile as GoogleUser);
           createUser.mutate(user);
           return true;

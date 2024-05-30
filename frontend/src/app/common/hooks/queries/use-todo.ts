@@ -47,26 +47,25 @@ export const useTodos = (requestedEmail: string, token: string | undefined) => {
 export const useTodoCreation = (email: string, token: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation(
+  return useMutation<unknown, Error, Partial<Todo>, unknown>(
     async (todo: Partial<Todo>) => {
-      try {
-        const url = new URL(`/todos?user=${email}`, process.env.API_URL);
+      const url = new URL(`/todos?user=${email}`, process.env.API_URL);
 
-        const response = await fetch(url.toString(), {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(todo),
-        });
+      const response = await fetch(url.toString(), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(todo),
+      });
 
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-      } catch (e) {
-        throw new Error('Failed to create todo', { cause: e as Error });
+      const json = await response.json();
+      if (!response.ok) {
+        const error = new Error(json.message);
+        throw error;
       }
+      return json;
     },
     {
       onSuccess: () =>
@@ -78,25 +77,31 @@ export const useTodoCreation = (email: string, token: string) => {
 export const useTodoPatch = (email: string, token: string, todoId: number) => {
   const queryClient = useQueryClient();
 
-  return useMutation(
+  return useMutation<unknown, Error, Partial<Todo>, unknown>(
     async (todo: Partial<Todo>) => {
-      try {
-        const url = new URL(`/todos/${todoId}?user=${email}`, process.env.API_URL);
-        const response = await fetch(url.toString(), {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(todo),
-        });
+      // try {
+      const url = new URL(`/todos/${todoId}?user=${email}`, process.env.API_URL);
+      const response = await fetch(url.toString(), {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(todo),
+      });
 
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-      } catch (e) {
-        throw new Error('Failed to update todo', { cause: e as Error });
+      const json = await response.json();
+      if (!response.ok) {
+        const error = new Error(json.message);
+        // error.message = json.message;
+        throw error;
       }
+      return json;
+      // } catch (e) {
+      //   console.log('error eeeeee', e);
+      //   // throw new Error('Failed to create todo2', { cause: e as Error });
+      //   throw e;
+      // }
     },
     {
       onSuccess: () =>

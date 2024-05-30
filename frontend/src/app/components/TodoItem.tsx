@@ -77,8 +77,8 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
     dispatch(decrementOwnTodoNumber());
   };
 
-  const getIcon = (category: string) => {
-    const Icon = todoCategories.get(category)?.icon;
+  const getIcon = (category?: string) => {
+    const Icon = category ? todoCategories.get(category)?.icon : null;
     return Icon ? <Icon /> : <MoreHoriz />;
   };
 
@@ -125,7 +125,7 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
             {/* <Tooltip title={todo.completed ? 'Done' : 'Open. Created at ' + todo.createdAt}>
           {todo.completed ? <DoneIcon /> : <ListAltTwoToneIcon />}
         </Tooltip> */}
-            <CircularProgressWithLabel value={todo.progress} />
+            <CircularProgressWithLabel value={todo.progress || 0} />
           </Stack>
         }
       />
@@ -201,9 +201,9 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
           </Stack>
           <Grid container justifyContent="flex-end">
             <Stack direction="row">
-              <Chip label={todo.createdBy.email.substring(0, 6)} color="primary" size="small" sx={{ mx: 1 }} />{' '}
+              <Chip label={todo.createdBy?.email.substring(0, 6)} color="primary" size="small" sx={{ mx: 1 }} />{' '}
               <ForwardTwoToneIcon />
-              <Chip label={todo.performedBy.email.substring(0, 6)} color="primary" size="small" />
+              <Chip label={todo.performedBy?.email.substring(0, 6)} color="primary" size="small" />
             </Stack>
           </Grid>
         </>
