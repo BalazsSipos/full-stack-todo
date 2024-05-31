@@ -25,7 +25,7 @@ export class TodoServiceImpl implements TodoService {
   }
 
   public async findTodoByUserEmailAndTodoId(email: string, todoId: string): Promise<TodoRpDto> {
-    const todoEntity: TodoEntity = await this.todoRepository.findOneBy({ id: Number(todoId) });
+    const todoEntity: TodoEntity = await this.todoRepository.findOneBy({ id: todoId });
     if (!todoEntity) throw new HttpException(409, "Todo doesn't exist");
     if (!this.isUserAffectedByTodo(email, todoEntity))
       throw new HttpException(401, "You're not allowed to see this todo");
@@ -47,7 +47,7 @@ export class TodoServiceImpl implements TodoService {
         : await this.userService.findUserEntityByEmail(todoData.performedByEmail);
     if (!performedByUserEntity) throw new HttpException(409, "performedBy user doesn't exist");
 
-    const createTodoData: TodoEntity = {
+    const createTodoEntityData: TodoEntity = {
       ...todoData,
       startingDate: new Date(todoData.startingDate),
       createdBy: userEntity,
@@ -56,9 +56,9 @@ export class TodoServiceImpl implements TodoService {
       performedBy: performedByUserEntity,
     };
 
-    await this.todoRepository.save(createTodoData);
+    await this.todoRepository.save(createTodoEntityData);
 
-    return mapper.map(createTodoData, TodoEntity, TodoRpDto);
+    return mapper.map(createTodoEntityData, TodoEntity, TodoRpDto);
   }
 
   private async validateIncomingTodoData(todoData: CreateTodoDto): Promise<void> {

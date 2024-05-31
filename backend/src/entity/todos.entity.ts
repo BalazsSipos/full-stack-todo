@@ -7,7 +7,7 @@ import { UserEntity } from './users.entity';
 export class TodoEntity {
   @PrimaryGeneratedColumn()
   @AutoMap()
-  id?: number;
+  id?: string;
 
   @Column()
   @AutoMap()
