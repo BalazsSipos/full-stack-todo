@@ -1,4 +1,4 @@
-import { IsDefined, IsString, MinLength } from 'class-validator';
+import { IsDefined, IsEmail, IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
 import { User } from './User';
 
 export const todoStatuses = ['Open', 'Done', 'Obsolete'] as const;
@@ -7,19 +7,23 @@ export type TodoStatus = typeof todoStatuses[number];
 export class Todo {
   id?: number;
   @IsString()
-  @IsDefined()
-  @MinLength(1)
+  @IsNotEmpty()
   title?: string;
   description?: string;
   category?: string;
   completed?: boolean;
   location?: string;
+  @IsInt()
+  @Min(0)
+  @Max(100)
   progress?: number;
+  @IsDefined()
   startingDate?: string;
   createdAt?: string;
   createdBy?: User;
   createdByEmail?: string;
   performedBy?: User;
+  @IsEmail()
   performedByEmail?: string;
 
   prepareToBackend(todo: Todo): Todo {
@@ -28,7 +32,6 @@ export class Todo {
     }
     const preparedTodo: Todo = new Todo();
 
-    console.log('preparalando todo', todo);
     if (todo.id) {
       preparedTodo.id = todo.id;
     }
