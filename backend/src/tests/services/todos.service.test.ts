@@ -18,6 +18,7 @@ beforeEach(() => {
   container.bind<UserService>(TYPES.UserService).to(UserServiceMock);
 
   TodoRepository.findOpenTodosByUser = jest.fn((email: string) => [createTodoEntity(email)]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TodoRepository.save = jest.fn((todoEntity: any) => {
     todoEntity.id = '1';
     todoEntity.createdAt = new Date('2020-01-01T00:00:00.000Z');
