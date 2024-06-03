@@ -17,10 +17,6 @@ createMap(
   TodoEntity,
   TodoRpDto,
   forMember(
-    (d) => d?.id,
-    mapFrom((s) => s.id.toString()),
-  ),
-  forMember(
     (d) => d?.startingDate,
     mapFrom((s) => s.startingDate.toISOString()),
   ),

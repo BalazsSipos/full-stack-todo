@@ -1,9 +1,21 @@
 import { AutoMap } from '@automapper/classes';
-import { IsInt, IsString, Max, Min } from 'class-validator';
+import { IsDefined, IsEmail, IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
 import { UserRpDto } from './users.dto';
 
-export class CreateTodoDto {
+export class BaseDto {
+  populate(data: object) {
+    console.log('data', data);
+    for (const key in data) {
+      console.log('key', key);
+      console.log('data[key]', data[key]);
+      this[key] = data[key];
+    }
+  }
+}
+
+export class CreateTodoDto extends BaseDto {
   @IsString()
+  @IsNotEmpty()
   title: string;
 
   description?: string;
@@ -13,8 +25,10 @@ export class CreateTodoDto {
   location?: string;
 
   // @IsDate()
+  @IsDefined()
   startingDate: string;
 
+  @IsEmail()
   performedByEmail: string;
 }
 
@@ -22,7 +36,7 @@ export class UpdateTodoDto extends CreateTodoDto {
   @IsInt()
   @Min(0)
   @Max(100)
-  progress?: number;
+  progress: number;
 }
 
 export class CompleteTodoDto {

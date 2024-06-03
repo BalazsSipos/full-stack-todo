@@ -1,5 +1,5 @@
 import { CompleteTodoDto, CreateTodoDto, TodoRpDto, UpdateTodoDto } from '../dtos/todos.dto';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export interface Todo {
   id: string;
@@ -26,7 +26,7 @@ export interface TodoService {
 export interface TodoController {
   getTodos(req: Request, res: Response): Promise<Response<TodoRpDto[]>>;
   getTodoById(req: Request, res: Response): Promise<Response<TodoRpDto>>;
-  createTodo(req: Request, res: Response): Promise<Response<TodoRpDto>>;
-  updateTodo(req: Request, res: Response): Promise<Response<TodoRpDto>>;
+  createTodo(req: Request, res: Response, next: NextFunction): Promise<Response<TodoRpDto>>;
+  updateTodo(req: Request, res: Response, next: NextFunction): Promise<Response<TodoRpDto>>;
   deleteTodo(req: Request, res: Response): Promise<Response<TodoRpDto>>;
 }

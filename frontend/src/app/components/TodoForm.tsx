@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, CardHeader, Stack, TextField } from '@mui/material';
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, Stack, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 
@@ -11,6 +11,7 @@ import { useAppDispatch } from '../store/hooks';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTodoCreation, useTodoPatch } from '../common/hooks/queries/use-todo';
+import { validate } from 'class-validator';
 
 interface Props {
   todo?: Todo;
@@ -23,6 +24,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
 
   const { email } = useParams();
   const [token, setToken] = useState('invalid');
+  const [error, setError] = useState<ErrorList | null>(null);
 
   useEffect(() => {
     if (firebaseUser) {
@@ -34,18 +36,23 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
 
   const dispatch = useAppDispatch();
 
-  const form = useRef<HTMLFormElement | null>();
+  const form = useRef<HTMLFormElement>(null);
   const [startingDate, setStartingDate] = useState(todo?.startingDate ? DateTime.fromISO(todo.startingDate) : null);
-  // const [createdAt, setCreatedAt] = useState(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
 
   const createTodo = useTodoCreation(email ?? '', token);
   const updateTodo = useTodoPatch(email ?? '', token, Number(todo?.id));
+
+  const errorObject = createTodo.error || updateTodo.error;
+
+  let parsed;
+  if (errorObject) {
+    parsed = JSON.parse(errorObject.message ?? '{}');
+  }
 
   const loading = createTodo.isLoading || updateTodo.isLoading;
 
   const reset = () => {
     form.current?.reset();
-    // setCreatedAt(todo?.createdAt ? DateTime.fromISO(todo.createdAt) : null)
     setStartingDate(todo?.startingDate ? DateTime.fromISO(todo.startingDate) : null);
   };
 
@@ -55,7 +62,30 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     onFinish?.();
   };
 
-  const save = () => {
+  const onSuccessCreate = () => {
+    dispatch(incrementOwnTodoNumber());
+    onSuccess();
+  };
+
+  interface ErrorList {
+    [key: string]: string | undefined;
+  }
+
+  const validateIncomingTodoData = async (todoData: Todo): Promise<ErrorList | undefined> => {
+    parsed = null;
+    const result = await validate(todoData);
+    const errorList: ErrorList = {};
+    if (result.length > 0) {
+      result.forEach((validationError) => {
+        errorList[validationError.property] = validationError.constraints
+          ? Object.values(validationError.constraints).join(', ')
+          : '';
+      });
+      return errorList;
+    }
+  };
+
+  const save = async () => {
     if (!form.current || !email) {
       return;
     }
@@ -64,30 +94,43 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     }
 
     const data = new FormData(form.current);
-    const newTodo: Partial<Todo> = {
-      id: todo?.id ?? undefined,
-      title: (data.get('title') as string) ?? '',
-      description: (data.get('description') as string) ?? '',
-      category: (data.get('category') as string) ?? '',
-      location: (data.get('location') as string) ?? '',
-      progress: Number(data.get('progress')) ?? 0,
-      startingDate: startingDate?.toISODate() ?? undefined,
-      performedByEmail: (data.get('performedBy') as string) ?? '',
-    };
+    const newTodo = new Todo();
+    newTodo.id = Number(todo?.id) ?? undefined;
+    newTodo.title = data.get('title') as string;
+    newTodo.description = data.get('description') as string;
+    newTodo.category = data.get('category') as string;
+    newTodo.location = data.get('location') as string;
+    newTodo.progress = Number(data.get('progress'));
+    newTodo.startingDate = startingDate?.toISODate();
+    newTodo.performedByEmail = data.get('performedBy') as string;
+
+    const valRes = await validateIncomingTodoData(newTodo);
+
+    if (valRes) {
+      setError(valRes);
+      return;
+    } else {
+      setError(null);
+    }
+
     if (todo) {
       updateTodo.mutate(newTodo, { onSuccess });
     } else {
-      createTodo.mutate(newTodo, { onSuccess });
-      dispatch(incrementOwnTodoNumber());
+      createTodo.mutate(newTodo, { onSuccess: onSuccessCreate });
     }
   };
 
   return (
     <GlassSurface component={Card}>
       <CardHeader title={todo ? 'Edit todo' : 'New todo'} />
-      <CardContent component="form" ref={form as any}>
+      <CardContent component="form" ref={form}>
         <Stack spacing={2}>
           <TextField name="title" label="Title" defaultValue={todo?.title} disabled={loading} />
+          {(parsed?.title || error?.title) && (
+            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+              {parsed?.title || error?.title}
+            </Alert>
+          )}
           <TextField
             name="description"
             label="Description"
@@ -98,6 +141,11 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
           <TextField name="category" label="Category" defaultValue={todo?.category} disabled={loading} />
           <TextField name="location" label="Location" defaultValue={todo?.location} disabled={loading} />
           <TextField name="progress" label="Progress" defaultValue={todo?.progress} disabled={loading} />
+          {(parsed?.progress || error?.progress) && (
+            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+              {parsed?.progress || error?.progress}
+            </Alert>
+          )}
           <DatePicker
             label="Starting date"
             value={startingDate}
@@ -107,12 +155,22 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
               <TextField name="startingDate" {...params} helperText={params?.inputProps?.placeholder} />
             )}
           />
+          {(parsed?.startingDate || error?.startingDate) && (
+            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+              {parsed?.startingDate || error?.startingDate}
+            </Alert>
+          )}
           <TextField
             name="performedBy"
             label="Performed by"
-            defaultValue={todo?.performedBy.email}
+            defaultValue={todo?.performedBy?.email}
             disabled={loading}
           />
+          {(parsed?.performedByEmail || error?.performedByEmail) && (
+            <Alert variant="filled" severity="error">
+              {parsed?.performedByEmail || error?.performedByEmail}
+            </Alert>
+          )}
         </Stack>
       </CardContent>
       <CardActions>

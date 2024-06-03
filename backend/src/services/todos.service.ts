@@ -9,6 +9,7 @@ import { UserService } from '../interfaces/users.interface';
 import { inject, injectable } from 'inversify';
 import { isEmpty } from '@automapper/core';
 import { mapper } from '../mappings/mapper';
+import { validate } from 'class-validator';
 
 @injectable()
 export class TodoServiceImpl implements TodoService {
@@ -24,7 +25,7 @@ export class TodoServiceImpl implements TodoService {
   }
 
   public async findTodoByUserEmailAndTodoId(email: string, todoId: string): Promise<TodoRpDto> {
-    const todoEntity: TodoEntity = await this.todoRepository.findOneBy({ id: Number(todoId) });
+    const todoEntity: TodoEntity = await this.todoRepository.findOneBy({ id: todoId });
     if (!todoEntity) throw new HttpException(409, "Todo doesn't exist");
     if (!this.isUserAffectedByTodo(email, todoEntity))
       throw new HttpException(401, "You're not allowed to see this todo");
@@ -33,7 +34,10 @@ export class TodoServiceImpl implements TodoService {
   }
 
   public async createTodo(email: string, todoData: CreateTodoDto): Promise<TodoRpDto> {
-    if (isEmpty(todoData)) throw new HttpException(400, 'todoData is empty');
+    const createTodoDto = new CreateTodoDto();
+    createTodoDto.populate(todoData);
+    await this.validateIncomingTodoData(createTodoDto);
+
     const userEntity: UserEntity = await this.userService.findUserEntityByEmail(email);
     if (!userEntity) throw new HttpException(409, "User doesn't exist");
 
@@ -43,7 +47,7 @@ export class TodoServiceImpl implements TodoService {
         : await this.userService.findUserEntityByEmail(todoData.performedByEmail);
     if (!performedByUserEntity) throw new HttpException(409, "performedBy user doesn't exist");
 
-    const createTodoData: TodoEntity = {
+    const createTodoEntityData: TodoEntity = {
       ...todoData,
       startingDate: new Date(todoData.startingDate),
       createdBy: userEntity,
@@ -52,9 +56,20 @@ export class TodoServiceImpl implements TodoService {
       performedBy: performedByUserEntity,
     };
 
-    await this.todoRepository.save(createTodoData);
+    await this.todoRepository.save(createTodoEntityData);
 
-    return mapper.map(createTodoData, TodoEntity, TodoRpDto);
+    return mapper.map(createTodoEntityData, TodoEntity, TodoRpDto);
+  }
+
+  private async validateIncomingTodoData(todoData: CreateTodoDto): Promise<void> {
+    const result = await validate(todoData);
+    const errorList = {};
+    if (result.length > 0) {
+      result.forEach((error) => {
+        errorList[error.property] = Object.values(error.constraints).join(', ');
+      });
+      throw new HttpException(400, JSON.stringify(errorList));
+    }
   }
 
   public async updateTodo(
@@ -84,6 +99,11 @@ export class TodoServiceImpl implements TodoService {
   }
 
   private async editTodo(email: string, todoId: string, todoData: UpdateTodoDto): Promise<TodoRpDto> {
+    const updateTodoDto = new UpdateTodoDto();
+    updateTodoDto.populate(todoData);
+
+    await this.validateIncomingTodoData(updateTodoDto);
+
     const todoEntity: TodoEntity = await this.todoRepository.findByTodoId(Number(todoId));
 
     this.validateTodoData(email, todoEntity, todoData);
@@ -96,7 +116,6 @@ export class TodoServiceImpl implements TodoService {
       startingDate: new Date(todoData.startingDate),
       createdBy: todoEntity.createdBy,
       completed: todoEntity.completed,
-      progress: todoEntity.progress,
       createdAt: todoEntity.createdAt,
       performedBy: performedByUserEntity,
     };
