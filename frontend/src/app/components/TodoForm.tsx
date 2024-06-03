@@ -127,7 +127,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
         <Stack spacing={2}>
           <TextField name="title" label="Title" defaultValue={todo?.title} disabled={loading} />
           {(parsed?.title || error?.title) && (
-            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+            <Alert variant="filled" severity="error">
               {parsed?.title || error?.title}
             </Alert>
           )}
@@ -142,7 +142,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
           <TextField name="location" label="Location" defaultValue={todo?.location} disabled={loading} />
           <TextField name="progress" label="Progress" defaultValue={todo?.progress} disabled={loading} />
           {(parsed?.progress || error?.progress) && (
-            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+            <Alert variant="filled" severity="error">
               {parsed?.progress || error?.progress}
             </Alert>
           )}
@@ -156,7 +156,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
             )}
           />
           {(parsed?.startingDate || error?.startingDate) && (
-            <Alert variant="filled" severity={parsed ? 'error' : 'info'}>
+            <Alert variant="filled" severity="error">
               {parsed?.startingDate || error?.startingDate}
             </Alert>
           )}
