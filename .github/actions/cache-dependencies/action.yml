@@ -1,5 +1,10 @@
 name: 'Get and cache dependencies'
 description: 'Get the dependencies (via npm) and cache them.'
+inputs:
+  folder:
+    description: The name of the folder. Either backend of frontend
+    required: true
+    type: string
 runs:
   using: 'composite'
   steps:
@@ -7,10 +12,10 @@ runs:
       id: cache
       uses: actions/cache@v4
       with:
-        path: backend/node_modules
+        path: ${{ inputs.folder }}/node_modules
         key: node-module-dependencies-${{ hashFiles('**/package-lock.json') }}
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: npm ci
-      working-directory: backend
+      working-directory: ${{ inputs.folder }}
       shell: bash

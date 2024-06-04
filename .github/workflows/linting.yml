@@ -1,0 +1,22 @@
+name: Reusable linting
+on:
+  workflow_call:
+    inputs:
+      folder:
+        description: The name of the folder. Either backend of frontend
+        required: true
+        type: string
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Load and cache dependencies
+        uses: ./.github/actions/cache-dependencies
+        with:
+          folder: ${{ inputs.folder }}
+      - name: Check formatting
+        run: npm run format:check
+      - name: Lint code
+        run: npm run eslint
