@@ -8,9 +8,9 @@ on:
     paths:
       - 'backend/**'
   workflow_dispatch:
-# defaults:
-#   run:
-#     working-directory: backend
+defaults:
+  run:
+    working-directory: backend
 jobs:
   lint:
     uses: ./.github/workflows/linting.yml
