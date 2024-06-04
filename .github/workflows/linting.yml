@@ -18,5 +18,7 @@ jobs:
           folder: ${{ inputs.folder }}
       - name: Check formatting
         run: npm run format:check
+        working-directory: ${{ inputs.folder }}
       - name: Lint code
         run: npm run eslint
+        working-directory: ${{ inputs.folder }}
