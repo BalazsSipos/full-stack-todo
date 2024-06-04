@@ -3,6 +3,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 
 import { AuthContext } from '../common/components/AuthContext';
+import { ErrorList, validateIncomingFormData } from '../common/utils/validateIncomingFormData';
 import { GlassSurface } from '../common/components/GlassSurface';
 import { LoadingButton } from '@mui/lab';
 import { Todo } from '../models/Todo';
@@ -11,7 +12,6 @@ import { useAppDispatch } from '../store/hooks';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTodoCreation, useTodoPatch } from '../common/hooks/queries/use-todo';
-import { validate } from 'class-validator';
 
 interface Props {
   todo?: Todo;
@@ -67,24 +67,6 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     onSuccess();
   };
 
-  interface ErrorList {
-    [key: string]: string | undefined;
-  }
-
-  const validateIncomingTodoData = async (todoData: Todo): Promise<ErrorList | undefined> => {
-    parsed = null;
-    const result = await validate(todoData);
-    const errorList: ErrorList = {};
-    if (result.length > 0) {
-      result.forEach((validationError) => {
-        errorList[validationError.property] = validationError.constraints
-          ? Object.values(validationError.constraints).join(', ')
-          : '';
-      });
-      return errorList;
-    }
-  };
-
   const save = async () => {
     if (!form.current || !email) {
       return;
@@ -104,7 +86,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     newTodo.startingDate = startingDate?.toISODate();
     newTodo.performedByEmail = data.get('performedBy') as string;
 
-    const valRes = await validateIncomingTodoData(newTodo);
+    const valRes = await validateIncomingFormData(newTodo);
 
     if (valRes) {
       setError(valRes);
