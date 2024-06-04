@@ -18,3 +18,4 @@ jobs:
           folder: ${{ inputs.folder }}
       - name: Test code
         run: npm run test
+        working-directory: ${{ inputs.folder }}
