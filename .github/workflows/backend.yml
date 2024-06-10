@@ -1,0 +1,20 @@
+name: Run Backend checks
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - '.github/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+jobs:
+  lint:
+    uses: ./.github/workflows/linting.yml
+    with:
+      folder: backend
+  test:
+    needs: lint
+    uses: ./.github/workflows/testing.yml
+    with:
+      folder: backend
