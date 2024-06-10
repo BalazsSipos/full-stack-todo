@@ -2,7 +2,7 @@ import { IsDefined, IsEmail, IsInt, IsNotEmpty, IsString, Max, Min } from 'class
 import { User } from './User';
 
 export const todoStatuses = ['Open', 'Done', 'Obsolete'] as const;
-export type TodoStatus = typeof todoStatuses[number];
+export type TodoStatus = (typeof todoStatuses)[number];
 
 export class Todo {
   id?: number;
