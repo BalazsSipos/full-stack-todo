@@ -7,7 +7,7 @@
     "format:check": "prettier --check .",
     "eslint": "eslint .",
     "tsc": "tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest --run --environment jsdom"
   },
   "dependencies": {
     "@date-io/luxon": "^2.16.1",
@@ -31,6 +31,8 @@
     "react-router-dom": "^6.6.1"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.1.0",
+    "@testing-library/react": "^16.0.0",
     "@types/luxon": "^3.2.0",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
@@ -44,6 +46,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-risxss": "^2.1.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
+    "jsdom": "^24.1.0",
     "parcel": "^2.8.2",
     "prettier": "^2.8.1",
     "process": "^0.11.10",
