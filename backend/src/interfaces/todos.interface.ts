@@ -16,7 +16,7 @@ export interface Todo {
 }
 
 export interface TodoService {
-  findAllTodosByUser(email: string): Promise<TodoRpDto[]>;
+  findAllTodosByUser(email: string, onlyOpenTodos: boolean): Promise<TodoRpDto[]>;
   findTodoByUserEmailAndTodoId(userId: string, todoId: string): Promise<TodoRpDto>;
   createTodo(email: string, todoData: CreateTodoDto): Promise<TodoRpDto>;
   updateTodo(email: string, todoId: string, todoData: UpdateTodoDto | CompleteTodoDto): Promise<TodoRpDto>;

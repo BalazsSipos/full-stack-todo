@@ -30,7 +30,7 @@ describe('findAllTodosByUser()', () => {
   it('Should return the converted TodoRpDto list', async () => {
     const todoService: TodoService = container.get(TYPES.TodoService);
 
-    const todos = await todoService.findAllTodosByUser('1');
+    const todos = await todoService.findAllTodosByUser('1', false);
     expect(todos).toEqual([createTodoRpDto('1')]);
   });
 });

@@ -1,5 +1,5 @@
 import { AuthContext } from '../common/components/AuthContext';
-import { Card, CardContent, Grid, Typography } from '@mui/material';
+import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GlassSurface } from '../common/components/GlassSurface';
 import { Loading } from '../pages/Loading';
 import { Todo } from '../models/Todo';
@@ -24,6 +24,7 @@ export const TodoList = () => {
 
   const { email } = useParams();
   const [token, setToken] = useState('invalid');
+  const [onlyOpenTodos, setOnlyOpenTodos] = useState(true);
 
   useEffect(() => {
     if (firebaseUser) {
@@ -33,7 +34,11 @@ export const TodoList = () => {
     }
   }, [firebaseUser]);
 
-  const { data, isLoading } = useTodos(email ?? '', token);
+  const toggleTodosHandler = () => {
+    setOnlyOpenTodos((prevState) => !prevState);
+  };
+
+  const { data, isLoading } = useTodos(email ?? '', token, onlyOpenTodos ? 'true' : 'false');
 
   let content = <></>;
 
@@ -43,18 +48,23 @@ export const TodoList = () => {
 
   if (data && data.length > 0) {
     content = (
-      <Grid
-        container
-        spacing={{ xs: 2, md: 4, lg: 8 }}
-        // sx={{ p: { xs: 2, md: 4 } }}
-        columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}
-      >
-        {data.map((todo: Todo) => (
-          <Grid item xs={1} md={3} key={todo.id} justifyContent="center">
-            <TodoItem todo={todo} />
-          </Grid>
-        ))}
-      </Grid>
+      <>
+        <Button sx={{ my: 2 }} variant="contained" color="primary" onClick={toggleTodosHandler}>
+          {onlyOpenTodos ? 'Show all todos' : 'Show open todos'}
+        </Button>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 4, lg: 8 }}
+          // sx={{ p: { xs: 2, md: 4 } }}
+          columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}
+        >
+          {data.map((todo: Todo) => (
+            <Grid item xs={1} md={3} key={todo.id} justifyContent="center">
+              <TodoItem todo={todo} />
+            </Grid>
+          ))}
+        </Grid>
+      </>
     );
   }
   if (data && data.length == 0) {

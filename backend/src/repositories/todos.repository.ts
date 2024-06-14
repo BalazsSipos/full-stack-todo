@@ -1,4 +1,5 @@
 import { AppDataSource } from '../data-source';
+import { LessThan } from 'typeorm';
 import { TodoEntity } from '../entity/todos.entity';
 
 export const TodoRepository = AppDataSource.getRepository(TodoEntity).extend({
@@ -23,6 +24,27 @@ export const TodoRepository = AppDataSource.getRepository(TodoEntity).extend({
         { completed: false, createdBy: { email: userEmail } },
         { completed: false, performedBy: { email: userEmail } },
       ],
+      order: {
+        startingDate: 'ASC',
+        title: 'ASC',
+      },
+    });
+  },
+  findOpenAndDueTodosByUser(userEmail: string): TodoEntity[] {
+    const today = new Date(Date.now());
+    return this.find({
+      relations: {
+        createdBy: true,
+        performedBy: true,
+      },
+      where: [
+        { completed: false, startingDate: LessThan(today), createdBy: { email: userEmail } },
+        { completed: false, startingDate: LessThan(today), performedBy: { email: userEmail } },
+      ],
+      order: {
+        startingDate: 'ASC',
+        title: 'ASC',
+      },
     });
   },
 });

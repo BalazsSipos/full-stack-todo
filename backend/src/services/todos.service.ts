@@ -18,8 +18,10 @@ export class TodoServiceImpl implements TodoService {
 
   private todoRepository = TodoRepository;
 
-  public async findAllTodosByUser(userEmail: string): Promise<TodoRpDto[]> {
-    const todoEntities: TodoEntity[] = await this.todoRepository.findOpenTodosByUser(userEmail);
+  public async findAllTodosByUser(userEmail: string, onlyOpenTodos: boolean): Promise<TodoRpDto[]> {
+    const todoEntities: TodoEntity[] = onlyOpenTodos
+      ? await this.todoRepository.findOpenAndDueTodosByUser(userEmail)
+      : await this.todoRepository.findOpenTodosByUser(userEmail);
     const todoRpDtos: TodoRpDto[] = todoEntities.map((todoEntity) => mapper.map(todoEntity, TodoEntity, TodoRpDto));
     return todoRpDtos;
   }
