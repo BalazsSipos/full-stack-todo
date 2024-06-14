@@ -83,7 +83,7 @@ export const TodoForm = ({ todo, onFinish }: Props) => {
     newTodo.category = data.get('category') as string;
     newTodo.location = data.get('location') as string;
     newTodo.progress = Number(data.get('progress'));
-    newTodo.startingDate = startingDate?.toISODate();
+    newTodo.startingDate = startingDate?.toISODate() ?? undefined;
     newTodo.performedByEmail = data.get('performedBy') as string;
 
     const valRes = await validateIncomingFormData(newTodo);

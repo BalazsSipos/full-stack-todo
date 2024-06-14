@@ -14,11 +14,13 @@ export class TodoControllerImpl implements TodoController {
   // @UseBefore(authenticateJWT, authorizeOwnUserRequest)
   getTodos = async (req: Request, res: Response): Promise<Response<TodoRpDto[]>> => {
     const email = req.email;
+    const onlyOpenTodos = req.query.open === 'true' ? true : false;
+
     if (!email) {
       throw new Error('email is required');
       // return res.status(400).json({ error: 'email is required' });
     }
-    const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email);
+    const findAllTodosData: TodoRpDto[] = await this.todoService.findAllTodosByUser(email, onlyOpenTodos);
     const data = res.status(200).json(findAllTodosData);
     return data;
   };

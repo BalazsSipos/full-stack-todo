@@ -4,16 +4,16 @@ import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
-export const useTodos = (requestedEmail: string, token: string | undefined) => {
+export const useTodos = (requestedEmail: string, token: string | undefined, onlyOpenTodos: string) => {
   const navigate = useNavigate();
   const context = useContext(AuthContext);
   const firebaseUser = context?.firebaseUser ?? null;
 
   return useQuery<Todo[], unknown>(
-    ['todos', 'list', requestedEmail, firebaseUser?.email, token !== 'invalid'],
+    ['todos', 'list', requestedEmail, firebaseUser?.email, token !== 'invalid', onlyOpenTodos],
     async () => {
       try {
-        const url = new URL(`/todos?user=${requestedEmail}`, process.env.API_URL);
+        const url = new URL(`/todos?user=${requestedEmail}&open=${onlyOpenTodos}`, process.env.API_URL);
         const fetchResponse = await fetch(url.toString(), {
           headers: {
             authorization: `Bearer ${token}`,

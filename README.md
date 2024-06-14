@@ -1,5 +1,7 @@
 # TODO POC
 
+![3 todos in the list](Todo.png)
+
 ## Introduction
 
 The Todo POC is a simple application that allows users to manage their daily tasks. With the app, users can create, update and delete tasks, as well as mark them as completed. It provides a user-friendly interface and a seamless experience for managing daily tasks. By default it shows only those tasks, where the start date is today or earlier.
