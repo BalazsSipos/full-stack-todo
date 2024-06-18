@@ -9,14 +9,18 @@ import { useParams } from 'react-router-dom';
 import { useTodos } from '../common/hooks/queries/use-todo';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
-const EmptyListCard = () => (
-  <GlassSurface component={Card} opacity={0.1}>
-    <CardContent sx={{ textAlign: 'center' }}>
-      <SentimentDissatisfiedIcon />
-      <Typography>It&apos;s so empty here</Typography>
-    </CardContent>
-  </GlassSurface>
-);
+const EmptyListCard = ({ onlyOpenTodos }: { onlyOpenTodos: boolean }) => {
+  const viewTypeString = onlyOpenTodos ? 'open' : '';
+
+  return (
+    <GlassSurface component={Card} opacity={0.1}>
+      <CardContent sx={{ textAlign: 'center' }}>
+        <SentimentDissatisfiedIcon />
+        <Typography>{`There are no ${viewTypeString} tasks`}</Typography>
+      </CardContent>
+    </GlassSurface>
+  );
+};
 
 export const TodoList = () => {
   const context = useContext(AuthContext);
@@ -49,15 +53,7 @@ export const TodoList = () => {
   if (data && data.length > 0) {
     content = (
       <>
-        <Button sx={{ my: 2 }} variant="contained" color="primary" onClick={toggleTodosHandler}>
-          {onlyOpenTodos ? 'Show all todos' : 'Show open todos'}
-        </Button>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 4, lg: 8 }}
-          // sx={{ p: { xs: 2, md: 4 } }}
-          columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}
-        >
+        <Grid container spacing={{ xs: 2, md: 4, lg: 8 }} columns={{ xs: 1, md: 6, lg: 6, xl: 9 }}>
           {data.map((todo: Todo) => (
             <Grid item xs={1} md={3} key={todo.id} justifyContent="center">
               <TodoItem todo={todo} />
@@ -68,8 +64,15 @@ export const TodoList = () => {
     );
   }
   if (data && data.length == 0) {
-    content = <EmptyListCard />;
+    content = <EmptyListCard onlyOpenTodos={onlyOpenTodos} />;
   }
 
-  return content;
+  return (
+    <>
+      <Button sx={{ my: 2 }} variant="contained" color="primary" onClick={toggleTodosHandler}>
+        {onlyOpenTodos ? 'Show all todos' : 'Show open todos'}
+      </Button>
+      {content}
+    </>
+  );
 };
